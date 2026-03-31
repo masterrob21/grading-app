@@ -9,13 +9,19 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
                 <div>
+                    @if(session('success'))
+                        <div id="session-message" class="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    
                     <div class="flex justify-between items-center gap-4 mb-6">
                         <div class="flex-1">
                             <h2 class="text-lg font-semibold">List of Users</h2>
                             <p class="text-gray-600">Create, manage and remove users</p>    
                         </div>
                         <div class="flex justify-items-end">
-                            <a href="" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Add New</a>
+                            <a href="{{ route('users.create') }}" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Add New</a>
                         </div>    
                     </div>
                     
@@ -63,4 +69,13 @@
 
         </div>
     </div>
+
+    <script type="module">
+        $(document).ready(function() {
+            // Auto-hide session message after 5 seconds
+            setTimeout(function() {
+                $('#session-message').fadeOut('slow');
+            }, 5000);
+        });
+    </script>
 </x-app-layout>
