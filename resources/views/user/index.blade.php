@@ -30,7 +30,7 @@
                             <table class="w-full border-collapse">
                                 <thead>
                                     <tr class="bg-gray-100 border-b">
-                                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">ID</th>
+                                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">#</th>
                                         <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
                                         <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
                                         <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Verified</th>
@@ -40,7 +40,7 @@
                                 <tbody>
                                     @foreach($users as $user)
                                         <tr class="border-b hover:bg-gray-50">
-                                            <td class="px-6 py-3 text-sm text-gray-900">{{ $user->id }}</td>
+                                            <td class="px-6 py-3 text-sm text-gray-900">{{ $loop->iteration }}</td>
                                             <td class="px-6 py-3 text-sm text-gray-900">{{ $user->name }}</td>
                                             <td class="px-6 py-3 text-sm text-gray-900">{{ $user->email }}</td>
                                             <td class="px-6 py-3 text-sm text-gray-900">
@@ -51,8 +51,12 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-3 text-sm">
-                                                <a href="" class="text-blue-500 hover:text-blue-700 mr-3">Edit</a>
-                                                <a href="" class="text-red-500 hover:text-red-700">Delete</a>
+                                                <a href="{{ route('users.show', $user) }}" class="text-blue-500 hover:text-blue-700 mr-3">View</a>
+                                                <form method="POST" action="{{ route('users.destroy', $user) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                                                </form>
                                             </td>
                                         </tr>
                                     @endforeach
