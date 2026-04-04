@@ -25,8 +25,8 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900">{{ __('Manage Students') }}</h3>
-                            <p class="text-sm text-gray-500 mt-1">{{ __('View, show, and delete student records from the system.') }}</p>
+                            <h3 class="text-lg font-semibold text-gray-900">{{ __('Manage Academic Year') }}</h3>
+                            <p class="text-sm text-gray-500 mt-1">{{ __('View, show, and delete records.') }}</p>
                         </div>
                         <a href="{{ route('academic_years.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             {{ __('add Academic Year') }}
@@ -55,8 +55,8 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $year->year }}</td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $year->is_current ? __('Current') : __('Inactive') }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
-                                                <a href="{{ route('academic_years.edit', $year->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition font-medium text-xs">{{ __('Edit') }}</a>
+                                            <td class="px-6 py-4 text-sm">
+                                                <a href="{{ route('academic_years.edit', $year->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition font-medium text-xs mb-1 md:mb-0">{{ __('Edit') }}</a>
                                                 <form action="{{ route('academic_years.destroy', $year->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this academic year?') }}');">
                                                     @csrf
                                                     @method('DELETE')
