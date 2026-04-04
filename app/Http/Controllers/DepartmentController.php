@@ -77,6 +77,12 @@ class DepartmentController extends Controller
     public function destroy(string $id)
     {
         $department = Department::findOrFail($id);
+
+        // Check if department has related students
+        if ($department->students()->exists()) {
+            return redirect()->route('departments.index')->with('error', 'Cannot delete department. It has associated students.');
+        }
+
         $department->delete();
 
         return redirect()->route('departments.index')->with('success', 'Department deleted successfully.');

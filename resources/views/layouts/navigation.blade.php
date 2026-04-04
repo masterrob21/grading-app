@@ -16,8 +16,12 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
-                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+                    <x-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')||request()->routeIs('users.create')||request()->routeIs('users.edit')||request()->routeIs('users.show')">
                         {{ __('User') }}
+                    </x-nav-link>
+                    
+                    <x-nav-link :href="route('students.index')" :active="request()->routeIs('students.index')||request()->routeIs('students.create')||request()->routeIs('students.edit')||request()->routeIs('students.show')">
+                        {{ __('Student') }}
                     </x-nav-link>
                 </div>
             </div>
@@ -75,8 +79,12 @@
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
 
-            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')">
+            <x-responsive-nav-link :href="route('users.index')" :active="request()->routeIs('users.index')||request()->routeIs('users.create')||request()->routeIs('users.edit')||request()->routeIs('users.show')">
                 {{ __('User') }}
+            </x-responsive-nav-link>
+            
+            <x-responsive-nav-link :href="route('students.index')" :active="request()->routeIs('students.index')||request()->routeIs('students.create')||request()->routeIs('students.edit')||request()->routeIs('students.show')">
+                {{ __('Student') }}
             </x-responsive-nav-link>
         </div>
 
