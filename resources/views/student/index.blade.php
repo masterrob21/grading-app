@@ -56,7 +56,7 @@
                                             <td class="px-6 py-3 font-medium text-gray-900">{{ $index + 1 }}</td>
                                             <td class="px-6 py-3">{{ $student->student_id }}</td>
                                             <td class="px-6 py-3 capitalize">{{ $student->full_name }}</td>
-                                            <td class="px-6 py-3">{{ $student->department?->department_name ?? '-' }}</td>
+                                            <td class="px-6 py-3 capitalize">{{ $student->department?->department_name ?? '-' }}</td>
                                             <td class="px-6 py-3">
                                                 <a href="{{ route('students.show', $student->id) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition font-medium text-xs mb-1 md:mb-0">
                                                     {{ __('Show') }}

@@ -9,31 +9,31 @@
         <div class="max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 space-y-6">
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p class="text-xs uppercase tracking-wide text-gray-500">{{ __('Student ID') }}</p>
-                            <p class="mt-2 text-lg font-medium text-gray-900">{{ $student->student_id }}</p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p class="text-xs uppercase tracking-wide text-gray-500">{{ __('Full Name') }}</p>
-                            <p class="mt-2 text-lg font-medium text-gray-900">{{ $student->full_name }}</p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg sm:col-span-2">
-                            <p class="text-xs uppercase tracking-wide text-gray-500">{{ __('Department') }}</p>
-                            <p class="mt-2 text-lg font-medium text-gray-900">{{ $student->department?->department_name ?? '-' }}</p>
-                        </div>
-                    </div>
-
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p class="text-xs uppercase tracking-wide text-gray-500">{{ __('Created At') }}</p>
-                            <p class="mt-2 text-lg font-medium text-gray-900">{{ $student->created_at->format('M d, Y') }}</p>
-                        </div>
-                        <div class="bg-gray-50 p-4 rounded-lg">
-                            <p class="text-xs uppercase tracking-wide text-gray-500">{{ __('Last Updated') }}</p>
-                            <p class="mt-2 text-lg font-medium text-gray-900">{{ $student->updated_at->format('M d, Y') }}</p>
-                        </div>
-                    </div>
+                    <table class="w-full text-sm text-left text-gray-600 border-collapse border border-gray-300">
+                        <caption class="text-lg font-semibold text-gray-900 mb-4 text-left">{{ __('Student Information') }}</caption>
+                        <tbody>
+                            <tr class="border-b border-gray-300">
+                                <td class="px-6 py-4 font-medium text-gray-900 w-1/3 border-r border-gray-300 bg-blue-50">{{ __('Student ID') }}</td>
+                                <td class="px-6 py-4">{{ $student->student_id }}</td>
+                            </tr>
+                            <tr class="border-b border-gray-300">
+                                <td class="px-6 py-4 font-medium text-gray-900 border-r border-gray-300 bg-blue-50">{{ __('Full Name') }}</td>
+                                <td class="px-6 py-4 capitalize">{{ $student->full_name }}</td>
+                            </tr>
+                            <tr class="border-b border-gray-300">
+                                <td class="px-6 py-4 font-medium text-gray-900 border-r border-gray-300 bg-blue-50">{{ __('Department') }}</td>
+                                <td class="px-6 py-4 capitalize">{{ $student->department?->department_name ?? '-' }}</td>
+                            </tr>
+                            <tr class="border-b border-gray-300">
+                                <td class="px-6 py-4 font-medium text-gray-900 border-r border-gray-300 bg-blue-50">{{ __('Created At') }}</td>
+                                <td class="px-6 py-4">{{ $student->created_at->format('M d, Y') }}</td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 font-medium text-gray-900 border-r border-gray-300 bg-blue-50">{{ __('Last Updated') }}</td>
+                                <td class="px-6 py-4">{{ $student->updated_at->format('M d, Y') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
 
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
                         <a href="{{ route('students.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest hover:bg-gray-400 transition">{{ __('Back to list') }}</a>
