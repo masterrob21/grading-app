@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
     Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
     Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
+
+    Route::get('/academic-years', [AcademicYearController::class, 'index'])->name('academic_years.index');
+    Route::get('/academic-years/create', [AcademicYearController::class, 'create'])->name('academic_years.create');
+    Route::post('/academic-years', [AcademicYearController::class, 'store'])->name('academic_years.store');
+    Route::get('/academic-years/{academic_year}/edit', [AcademicYearController::class, 'edit'])->name('academic_years.edit');
+    Route::put('/academic-years/{academic_year}', [AcademicYearController::class, 'update'])->name('academic_years.update');
+    Route::delete('/academic-years/{academic_year}', [AcademicYearController::class, 'destroy'])->name('academic_years.destroy');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
