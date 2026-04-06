@@ -22,4 +22,9 @@ class Enrollment extends Model
     {
         return $this->belongsTo(AcademicYear::class);
     }
+
+    public function marks()
+    {
+        return $this->hasMany(Mark::class);
+    }
 }
