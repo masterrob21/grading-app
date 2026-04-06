@@ -19,6 +19,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('student_id')->references('student_id')->on('students')->onDelete('cascade');
+            $table->unique(['student_id', 'course_id', 'academic_year_id'], 'enrollment_unique');
         });
     }
 
