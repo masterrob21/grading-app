@@ -89,4 +89,15 @@ class StudentController extends Controller
 
         return redirect()->route('students.index')->with('success', 'Student deleted successfully.');
     }
+
+    public function showByStudentId($student_id)
+    {
+        $student = Student::where('student_id', $student_id)->first();
+
+        if ($student) {
+            return response()->json(['name' => $student->full_name]);
+        }
+
+        return response()->json(['error' => 'Student not found'], 404);
+    }
 }

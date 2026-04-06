@@ -11,4 +11,9 @@ class AcademicYear extends Model
     protected $casts = [
         'is_current' => 'boolean',
     ];
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
 }

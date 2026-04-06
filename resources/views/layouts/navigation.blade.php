@@ -23,6 +23,9 @@
                     <x-nav-link :href="route('students.index')" :active="request()->routeIs('students.index')||request()->routeIs('students.create')||request()->routeIs('students.edit')||request()->routeIs('students.show')">
                         {{ __('Student') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.index')||request()->routeIs('enrollments.create')||request()->routeIs('enrollments.edit')||request()->routeIs('enrollments.show')">
+                        {{ __('Enrollments') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -85,6 +88,9 @@
             
             <x-responsive-nav-link :href="route('students.index')" :active="request()->routeIs('students.index')||request()->routeIs('students.create')||request()->routeIs('students.edit')||request()->routeIs('students.show')">
                 {{ __('Student') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.index')||request()->routeIs('enrollments.create')||request()->routeIs('enrollments.edit')||request()->routeIs('enrollments.show')">
+                {{ __('Enrollments') }}
             </x-responsive-nav-link>
         </div>
 
