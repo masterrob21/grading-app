@@ -18,8 +18,8 @@ class Mark extends Model
         return $this->belongsTo(Assessment::class);
     }
 
-    public function teacher()
+    public function user()
     {
-        return $this->belongsTo(User::class, 'user_id');
+        return $this->belongsTo(User::class);
     }
 }
