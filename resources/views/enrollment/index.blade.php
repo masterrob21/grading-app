@@ -20,17 +20,45 @@
                 </div>
             @endif
 
+            @if(session('error'))
+                <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <p class="text-sm font-medium text-red-800">{{ session('error') }}</p>
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <ul class="text-sm text-red-800 list-disc pl-5 space-y-1">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
             @if($enrollments->count() > 0)
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
                 <div class="p-6 text-gray-900">
-                    <div class="flex justify-between items-center">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                         <div>
                             <h3 class="text-lg font-semibold text-gray-900">{{ __('Manage Enrollments') }}</h3>
                             <p class="text-sm text-gray-500 mt-1">{{ __('View, show, and delete enrollment records.') }}</p>
                         </div>
-                        <a href="{{ route('enrollments.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                            {{ __('Add Enrollment') }}
-                        </a>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto">
+                            <a href="{{ route('enrollments.sample_csv') }}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition ease-in-out duration-150 whitespace-nowrap">
+                                {{ __('Download Sample CSV') }}
+                            </a>
+                            <form action="{{ route('enrollments.bulk_upload') }}" method="POST" enctype="multipart/form-data" class="flex flex-col sm:flex-row sm:items-center gap-2 w-full">
+                                @csrf
+                                <input type="file" name="enrollments_file" accept=".csv,text/csv" required class="block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                <button type="submit" class="inline-flex items-center justify-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 active:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition ease-in-out duration-150 whitespace-nowrap">
+                                    {{ __('Upload Bulk List') }}
+                                </button>
+                            </form>
+                            <a href="{{ route('enrollments.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150 whitespace-nowrap">
+                                {{ __('Add Enrollment') }}
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -79,10 +107,23 @@
                     @else
                         <div class="text-center py-12">
                             <h3 class="text-lg font-semibold text-gray-900">{{ __('No enrollments found') }}</h3>
-                            <p class="mt-2 text-sm text-gray-500">{{ __('Create a new enrollment to get started.') }}</p>
-                            <a href="{{ route('enrollments.create') }}" class="mt-6 inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
-                                {{ __('Add Enrollment') }}
-                            </a>
+                            <p class="mt-2 text-sm text-gray-500">{{ __('Create a new enrollment or upload a CSV list to get started.') }}</p>
+                            <div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+                                <a href="{{ route('enrollments.sample_csv') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 transition ease-in-out duration-150 whitespace-nowrap">
+                                    {{ __('Download Sample CSV') }}
+                                </a>
+                                <form action="{{ route('enrollments.bulk_upload') }}" method="POST" enctype="multipart/form-data" class="flex flex-col sm:flex-row items-center gap-2">
+                                    @csrf
+                                    <input type="file" name="enrollments_file" accept=".csv,text/csv" required class="block w-full text-sm text-gray-700 border border-gray-300 rounded-md cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <button type="submit" class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 active:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition ease-in-out duration-150 whitespace-nowrap">
+                                        {{ __('Upload Bulk List') }}
+                                    </button>
+                                </form>
+                                <a href="{{ route('enrollments.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                                    {{ __('Add Enrollment') }}
+                                </a>
+                            </div>
+                            <p class="mt-3 text-xs text-gray-500">{{ __('CSV headers: student_id, course_code (or course_id), academic_year (or academic_year_id).') }}</p>
                         </div>
                     @endif
                 </div>

@@ -73,6 +73,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
     Route::get('/enrollments/create', [EnrollmentController::class, 'create'])->name('enrollments.create');
+    Route::get('/enrollments/sample-csv', [EnrollmentController::class, 'downloadSampleCsv'])->name('enrollments.sample_csv');
+    Route::post('/enrollments/bulk-upload', [EnrollmentController::class, 'bulkUpload'])->name('enrollments.bulk_upload');
     Route::post('/enrollments', [EnrollmentController::class, 'store'])->name('enrollments.store');
     Route::get('/enrollments/{enrollment}', [EnrollmentController::class, 'show'])->name('enrollments.show');
     Route::get('/enrollments/{enrollment}/edit', [EnrollmentController::class, 'edit'])->name('enrollments.edit');
@@ -89,6 +91,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/marks', [MarkController::class, 'index'])->name('marks.index');
     Route::get('/marks/create', [MarkController::class, 'create'])->name('marks.create');
+    Route::get('/marks/sample-csv', [MarkController::class, 'downloadSampleCsv'])->name('marks.sample_csv');
+    Route::post('/marks/bulk-upload', [MarkController::class, 'bulkUpload'])->name('marks.bulk_upload');
     Route::post('/marks', [MarkController::class, 'store'])->name('marks.store');
     Route::get('/marks/{mark}/edit', [MarkController::class, 'edit'])->name('marks.edit');
     Route::put('/marks/{mark}', [MarkController::class, 'update'])->name('marks.update');
