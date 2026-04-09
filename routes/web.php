@@ -8,6 +8,7 @@ use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\AssessmentController;
+use App\Http\Controllers\MarkController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -37,6 +38,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/students', [StudentController::class, 'index'])->name('students.index');
     Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+    Route::get('/students/lookup/{student_id}', [StudentController::class, 'showByStudentId'])->name('students.lookup');
     Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
     Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
     Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
@@ -72,6 +74,14 @@ Route::middleware('auth')->group(function () {
     Route::get('/assessments/{assessment}/edit', [AssessmentController::class, 'edit'])->name('assessments.edit');
     Route::put('/assessments/{assessment}', [AssessmentController::class, 'update'])->name('assessments.update');
     Route::delete('/assessments/{assessment}', [AssessmentController::class, 'destroy'])->name('assessments.destroy');
+
+    Route::get('/marks', [MarkController::class, 'index'])->name('marks.index');
+    Route::get('/marks/create', [MarkController::class, 'create'])->name('marks.create');
+    Route::post('/marks', [MarkController::class, 'store'])->name('marks.store');
+    Route::get('/marks/{mark}/edit', [MarkController::class, 'edit'])->name('marks.edit');
+    Route::put('/marks/{mark}', [MarkController::class, 'update'])->name('marks.update');
+    Route::delete('/marks/{mark}', [MarkController::class, 'destroy'])->name('marks.destroy');
+    Route::post('/marks/{mark}/request-edit', [MarkController::class, 'requestEdit'])->name('marks.request_edit');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

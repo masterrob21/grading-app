@@ -8,6 +8,10 @@ class Mark extends Model
 {
     protected $fillable = ['enrollment_id', 'assessment_id', 'user_id', 'score', 'is_locked'];
 
+    protected $casts = [
+        'is_locked' => 'boolean',
+    ];
+
     public function enrollment()
     {
         return $this->belongsTo(Enrollment::class);
