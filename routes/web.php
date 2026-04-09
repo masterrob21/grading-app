@@ -40,13 +40,15 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/students', [StudentController::class, 'index'])->name('students.index');
     Route::get('/students/create', [StudentController::class, 'create'])->name('students.create');
+    Route::get('/students/sample-csv', [StudentController::class, 'downloadSampleCsv'])->name('students.sample_csv');
     Route::post('/students', [StudentController::class, 'store'])->name('students.store');
+    Route::post('/students/bulk-upload', [StudentController::class, 'bulkUpload'])->name('students.bulk_upload');
     Route::get('/students/lookup/{student_id}', [StudentController::class, 'showByStudentId'])->name('students.lookup');
     Route::get('/students/{student}', [StudentController::class, 'show'])->name('students.show');
     Route::get('/students/{student}/edit', [StudentController::class, 'edit'])->name('students.edit');
     Route::put('/students/{student}', [StudentController::class, 'update'])->name('students.update');
     Route::delete('/students/{student}', [StudentController::class, 'destroy'])->name('students.destroy');
-    Route::get('/students/{student_id}', [StudentController::class, 'showByStudentId'])->name('students.show_by_id');
+    // Route::get('/students/{student_id}', [StudentController::class, 'showByStudentId'])->name('students.show_by_id');
 
     Route::get('/academic-years', [AcademicYearController::class, 'index'])->name('academic_years.index');
     Route::get('/academic-years/create', [AcademicYearController::class, 'create'])->name('academic_years.create');

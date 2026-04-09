@@ -100,4 +100,175 @@ class StudentController extends Controller
 
         return response()->json(['error' => 'Student not found'], 404);
     }
+
+    public function downloadSampleCsv()
+    {
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="students_sample.csv"',
+        ];
+
+        $callback = function () {
+            $output = fopen('php://output', 'w');
+
+            fputcsv($output, ['student_id', 'full_name', 'department']);
+            fputcsv($output, ['STU001', 'Jane Doe', 'Computer Science']);
+            fputcsv($output, ['STU002', 'John Smith', 'Mathematics']);
+
+            fclose($output);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    public function bulkUpload(Request $request)
+    {
+        $request->validate([
+            'students_file' => 'required|file|mimes:csv,txt|max:5120',
+        ]);
+
+        $uploadedFile = $request->file('students_file');
+
+        if (! $uploadedFile || ! $uploadedFile->isValid()) {
+            return redirect()->route('students.index')->with('error', 'Upload failed. Please try again with a valid CSV file.');
+        }
+
+        $filePath = $uploadedFile->getPathname();
+        $handle = fopen($filePath, 'r');
+
+        if (! $handle) {
+            return redirect()->route('students.index')->with('error', 'Unable to open the uploaded file.');
+        }
+
+        $header = fgetcsv($handle);
+
+        if (! $header) {
+            fclose($handle);
+
+            return redirect()->route('students.index')->with('error', 'The uploaded CSV file is empty.');
+        }
+
+        $normalizeHeaderKey = function ($column) {
+            $clean = strtolower(trim((string) $column));
+            $clean = preg_replace('/^\xEF\xBB\xBF/', '', $clean);
+            $clean = str_replace(['-', ' '], '_', $clean);
+
+            return $clean;
+        };
+
+        $headerAliases = [
+            'student_id' => ['student_id', 'studentid', 'student_no', 'student_number', 'matric_no', 'matric_number'],
+            'full_name' => ['full_name', 'fullname', 'name', 'student_name'],
+            'department_id' => ['department_id', 'dept_id'],
+            'department_name' => ['department_name', 'department', 'dept_name', 'dept'],
+        ];
+
+        $normalizedHeader = array_map(function ($column) use ($normalizeHeaderKey, $headerAliases) {
+            $normalized = $normalizeHeaderKey($column);
+
+            foreach ($headerAliases as $canonical => $aliases) {
+                if (in_array($normalized, $aliases, true)) {
+                    return $canonical;
+                }
+            }
+
+            return $normalized;
+        }, $header);
+
+        if (! in_array('student_id', $normalizedHeader, true) || ! in_array('full_name', $normalizedHeader, true)) {
+            fclose($handle);
+
+            return redirect()->route('students.index')->with('error', 'CSV must include headers for student id and full name (examples: student_id/full_name or Student ID/Full Name).');
+        }
+
+        if (
+            ! in_array('department_id', $normalizedHeader, true)
+            && ! in_array('department_name', $normalizedHeader, true)
+        ) {
+            fclose($handle);
+
+            return redirect()->route('students.index')->with('error', 'CSV must include one department header: department, department_name, or department_id.');
+        }
+
+        $departments = Department::select('id', 'department_name')->get();
+        $departmentNameMap = [];
+        $departmentIdMap = [];
+
+        foreach ($departments as $department) {
+            $departmentNameMap[strtolower(trim($department->department_name))] = $department->id;
+            $departmentIdMap[(string) $department->id] = $department->id;
+        }
+
+        $created = 0;
+        $updated = 0;
+        $skipped = 0;
+        $lineNumber = 1;
+        $rowErrors = [];
+
+        while (($row = fgetcsv($handle)) !== false) {
+            $lineNumber++;
+
+            if (! array_filter($row, fn ($value) => trim((string) $value) !== '')) {
+                continue;
+            }
+
+            $rowData = array_pad($row, count($normalizedHeader), null);
+            $record = array_combine($normalizedHeader, $rowData);
+
+            $studentId = trim((string) ($record['student_id'] ?? ''));
+            $fullName = trim((string) ($record['full_name'] ?? ''));
+
+            if ($studentId === '' || $fullName === '') {
+                $skipped++;
+                $rowErrors[] = "Line {$lineNumber}: missing student_id or full_name.";
+                continue;
+            }
+
+            $departmentId = null;
+
+            if (isset($record['department_id']) && trim((string) $record['department_id']) !== '') {
+                $departmentId = $departmentIdMap[trim((string) $record['department_id'])] ?? null;
+            }
+
+            if (! $departmentId) {
+                $departmentName = trim((string) ($record['department_name'] ?? $record['department'] ?? ''));
+                if ($departmentName !== '') {
+                    $departmentId = $departmentNameMap[strtolower($departmentName)] ?? null;
+                }
+            }
+
+            if (! $departmentId) {
+                $skipped++;
+                $rowErrors[] = "Line {$lineNumber}: invalid department reference.";
+                continue;
+            }
+
+            $student = Student::where('student_id', $studentId)->first();
+
+            if ($student) {
+                $student->update([
+                    'full_name' => $fullName,
+                    'department_id' => $departmentId,
+                ]);
+                $updated++;
+            } else {
+                Student::create([
+                    'student_id' => $studentId,
+                    'full_name' => $fullName,
+                    'department_id' => $departmentId,
+                ]);
+                $created++;
+            }
+        }
+
+        fclose($handle);
+
+        $message = "Bulk upload completed. Created: {$created}, Updated: {$updated}, Skipped: {$skipped}.";
+
+        if (! empty($rowErrors)) {
+            $message .= ' Issues: '.implode(' ', array_slice($rowErrors, 0, 5));
+        }
+
+        return redirect()->route('students.index')->with('success', $message);
+    }
 }
