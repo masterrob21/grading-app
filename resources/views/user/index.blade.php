@@ -51,11 +51,11 @@
                                                 @endif
                                             </td>
                                             <td class="px-6 py-2 text-sm whitespace-nowrap">
-                                                <a href="{{ route('users.show', $user) }}" class="text-blue-500 hover:text-blue-700 mr-3">View</a>
+                                                <a href="{{ route('users.show', $user) }}" class="bg-blue-100 text-blue-700 hover:bg-blue-200 transition px-3 py-1.5 rounded-md mr-3">View</a>
                                                 <form method="POST" action="{{ route('users.destroy', $user) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="text-red-500 hover:text-red-700">Delete</button>
+                                                    <button type="submit" class="bg-red-100 text-red-700 hover:bg-red-200 transition px-3 py-1.5 rounded-md">Delete</button>
                                                 </form>
                                             </td>
                                         </tr>
