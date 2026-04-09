@@ -62,10 +62,11 @@
 </x-app-layout>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+ document.addEventListener('DOMContentLoaded', function() {
     const studentIdInput = document.getElementById('student_id');
     const studentNameDiv = document.getElementById('student_name');
     const errorMessageDiv = document.getElementById('error_message');
+    const lookupRouteTemplate = "{{ route('students.lookup', ['student_id' => '__STUDENT_ID__']) }}";
 
     let timeout;
 
@@ -75,17 +76,23 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (studentId.length === 0) {
             studentNameDiv.textContent = '';
-            errorMessageDiv.textContent = '';
+            if (errorMessageDiv) {
+                errorMessageDiv.textContent = '';
+            }
             return;
         }
 
         timeout = setTimeout(() => {
-            fetch(`/students/${studentId}`)
+            const lookupUrl = lookupRouteTemplate.replace('__STUDENT_ID__', encodeURIComponent(studentId));
+
+            fetch(lookupUrl)
                 .then(response => response.json())
                 .then(data => {
                     if (data.name) {
                         studentNameDiv.textContent = `Student: ${data.name}`;
-                        errorMessageDiv.textContent = '';
+                        if (errorMessageDiv) {
+                            errorMessageDiv.textContent = '';
+                        }
                         studentNameDiv.className = 'mt-2 text-sm text-green-600';
                     } else {
                         studentNameDiv.textContent = 'Student not found';
