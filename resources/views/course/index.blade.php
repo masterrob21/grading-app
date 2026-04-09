@@ -51,11 +51,11 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach($courses as $index => $course)
                                         <tr class="hover:bg-gray-50">
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 uppercase">{{ $course->course_code }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 capitalize">{{ $course->title }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $course->semester == 1 ? __('First Semester') : __('Second Semester') }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900 uppercase">{{ $course->course_code }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900 capitalize">{{ $course->title }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">{{ $course->semester == 1 ? __('First Semester') : __('Second Semester') }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm space-x-2">
                                                 <a href="{{ route('courses.edit', $course->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition font-medium text-xs">{{ __('Edit') }}</a>
                                                 <form action="{{ route('courses.destroy', $course->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this course?') }}');">
                                                     @csrf

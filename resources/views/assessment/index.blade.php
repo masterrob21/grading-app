@@ -43,23 +43,23 @@
 							<table class="w-full text-sm text-left text-gray-600">
 								<thead class="text-xs uppercase bg-gray-100 text-gray-700">
 									<tr>
-										<th class="px-6 py-3">{{ __('#') }}</th>
-										<th class="px-6 py-3">{{ __('Course') }}</th>
-										<th class="px-6 py-3">{{ __('Title') }}</th>
-										<th class="px-6 py-3">{{ __('Max Score') }}</th>
-										<th class="px-6 py-3">{{ __('Weight (%)') }}</th>
-										<th class="px-6 py-3">{{ __('Actions') }}</th>
+										<th class="px-6 py-2">{{ __('#') }}</th>
+										<th class="px-6 py-2">{{ __('Course') }}</th>
+										<th class="px-6 py-2">{{ __('Title') }}</th>
+										<th class="px-6 py-2">{{ __('Max Score') }}</th>
+										<th class="px-6 py-2">{{ __('Weight (%)') }}</th>
+										<th class="px-6 py-2">{{ __('Actions') }}</th>
 									</tr>
 								</thead>
 								<tbody>
 									@foreach($assessments as $index => $assessment)
 										<tr class="bg-white border-b hover:bg-gray-50 transition">
-											<td class="px-6 py-3 font-medium text-gray-900">{{ $index + 1 }}</td>
-											<td class="px-6 py-3 whitespace-nowrap uppercase">{{ $assessment->course?->course_code ?? '-' }} {{ $assessment->course?->title ? '- ' . $assessment->course->title : '' }}</td>
-											<td class="px-6 py-3 whitespace-nowrap capitalize">{{ $assessment->title }}</td>
-											<td class="px-6 py-3 whitespace-nowrap">{{ number_format((float) $assessment->max_score, 2) }}</td>
-											<td class="px-6 py-3 whitespace-nowrap">{{ number_format((float) $assessment->weight, 2) }}</td>
-											<td class="px-6 py-3 whitespace-nowrap">
+											<td class="px-6 py-2 font-medium text-gray-900">{{ $index + 1 }}</td>
+											<td class="px-6 py-2 whitespace-nowrap uppercase">{{ $assessment->course?->course_code ?? '-' }} {{ $assessment->course?->title ? '- ' . $assessment->course->title : '' }}</td>
+											<td class="px-6 py-2 whitespace-nowrap capitalize">{{ $assessment->title }}</td>
+											<td class="px-6 py-2 whitespace-nowrap">{{ number_format((float) $assessment->max_score, 2) }}</td>
+											<td class="px-6 py-2 whitespace-nowrap">{{ number_format((float) $assessment->weight, 2) }}</td>
+											<td class="px-6 py-2 whitespace-nowrap">
 												<a href="{{ route('assessments.show', $assessment->id) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition font-medium text-xs mb-1 md:mb-0">
 													{{ __('Show') }}
 												</a>

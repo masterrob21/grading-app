@@ -51,14 +51,14 @@
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach($courseUsers as $index => $courseUser)
                                         <tr class="hover:bg-gray-50">
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900 uppercase">
                                                 {{ $courseUser->course?->course_code ?? '-' }}
                                                 {{ $courseUser->course?->title ? ' - ' . $courseUser->course->title : '' }}
                                             </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $courseUser->user?->name ?? '-' }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $courseUser->user?->email ?? '-' }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm space-x-2">
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">{{ $courseUser->user?->name ?? '-' }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">{{ $courseUser->user?->email ?? '-' }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm space-x-2">
                                                 <a href="{{ route('course_users.edit', $courseUser->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition font-medium text-xs">{{ __('Edit') }}</a>
                                                 <form action="{{ route('course_users.destroy', $courseUser->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this course user assignment?') }}');">
                                                     @csrf

@@ -43,21 +43,21 @@
                             <table class="w-full text-sm text-left text-gray-600">
                                 <thead class="text-xs uppercase bg-gray-100 text-gray-700">
                                     <tr>
-                                        <th class="px-6 py-3">{{ __('#') }}</th>
-                                        <th class="px-6 py-3">{{ __('Student ID') }}</th>
-                                        <th class="px-6 py-3">{{ __('Full Name') }}</th>
-                                        <th class="px-6 py-3">{{ __('Department') }}</th>
-                                        <th class="px-6 py-3">{{ __('Actions') }}</th>
+                                        <th class="px-6 py-3 whitespace-nowrap">{{ __('#') }}</th>
+                                        <th class="px-6 py-3 whitespace-nowrap">{{ __('Student ID') }}</th>
+                                        <th class="px-6 py-3 whitespace-nowrap">{{ __('Full Name') }}</th>
+                                        <th class="px-6 py-3 whitespace-nowrap">{{ __('Department') }}</th>
+                                        <th class="px-6 py-3 whitespace-nowrap">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach($students as $index => $student)
                                         <tr class="bg-white border-b hover:bg-gray-50 transition">
-                                            <td class="px-6 py-3 font-medium text-gray-900">{{ $index + 1 }}</td>
-                                            <td class="px-6 py-3">{{ $student->student_id }}</td>
-                                            <td class="px-6 py-3 capitalize">{{ $student->full_name }}</td>
-                                            <td class="px-6 py-3 capitalize">{{ $student->department?->department_name ?? '-' }}</td>
-                                            <td class="px-6 py-3">
+                                            <td class="px-6 py-2 font-medium text-gray-900">{{ $index + 1 }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap">{{ $student->student_id }}</td>
+                                            <td class="px-6 py-2 capitalize whitespace-nowrap">{{ $student->full_name }}</td>
+                                            <td class="px-6 py-2 capitalize whitespace-nowrap">{{ $student->department?->department_name ?? '-' }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap">
                                                 <a href="{{ route('students.show', $student->id) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition font-medium text-xs mb-1 md:mb-0">
                                                     {{ __('Show') }}
                                                 </a>

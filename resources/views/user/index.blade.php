@@ -40,17 +40,17 @@
                                 <tbody>
                                     @foreach($users as $user)
                                         <tr class="border-b hover:bg-gray-50">
-                                            <td class="px-6 py-3 text-sm text-gray-900">{{ $loop->iteration }}</td>
-                                            <td class="px-6 py-3 text-sm text-gray-900">{{ $user->name }}</td>
-                                            <td class="px-6 py-3 text-sm text-gray-900">{{ $user->email }}</td>
-                                            <td class="px-6 py-3 text-sm text-gray-900">
+                                            <td class="px-6 py-2 text-sm text-gray-900">{{ $loop->iteration }}</td>
+                                            <td class="px-6 py-2 text-sm text-gray-900 whitespace-nowrap">{{ $user->name }}</td>
+                                            <td class="px-6 py-2 text-sm text-gray-900 whitespace-nowrap">{{ $user->email }}</td>
+                                            <td class="px-6 py-2 text-sm text-gray-900 whitespace-nowrap">
                                                 @if($user->email_verified_at)
                                                     <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Verified</span>
                                                 @else
                                                     <span class="px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs">Pending</span>
                                                 @endif
                                             </td>
-                                            <td class="px-6 py-3 text-sm">
+                                            <td class="px-6 py-2 text-sm whitespace-nowrap">
                                                 <a href="{{ route('users.show', $user) }}" class="text-blue-500 hover:text-blue-700 mr-3">View</a>
                                                 <form method="POST" action="{{ route('users.destroy', $user) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
                                                     @csrf

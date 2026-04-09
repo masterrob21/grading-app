@@ -43,19 +43,19 @@
                             <table class="w-full class="w-full text-sm text-left text-gray-600">
                                 <thead class="text-xs uppercase bg-gray-100 text-gray-700"
                                     <tr>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('#') }}</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Year') }}</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
-                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
+                                        <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('#') }}</th>
+                                        <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Year') }}</th>
+                                        <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Status') }}</th>
+                                        <th class="px-2 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @foreach($academicYears as $index => $year)
                                         <tr class="hover:bg-gray-50">
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ $year->year }}</td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{{ $year->is_current ? __('Current') : __('Inactive') }}</td>
-                                            <td class="px-6 py-4 text-sm">
+                                            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
+                                            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900">{{ $year->year }}</td>
+                                            <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-600">{{ $year->is_current ? __('Current') : __('Inactive') }}</td>
+                                            <td class="px-2 py-2 text-sm">
                                                 <a href="{{ route('academic_years.edit', $year->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition font-medium text-xs mb-1 md:mb-0">{{ __('Edit') }}</a>
                                                 <form action="{{ route('academic_years.destroy', $year->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this academic year?') }}');">
                                                     @csrf
