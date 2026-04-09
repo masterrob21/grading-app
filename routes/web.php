@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AcademicYearController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\CourseUserController;
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\EnrollmentController;
@@ -58,6 +59,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/courses/{course}/edit', [CourseController::class, 'edit'])->name('courses.edit');
     Route::put('/courses/{course}', [CourseController::class, 'update'])->name('courses.update');
     Route::delete('/courses/{course}', [CourseController::class, 'destroy'])->name('courses.destroy');
+
+    Route::get('/course-users', [CourseUserController::class, 'index'])->name('course_users.index');
+    Route::get('/course-users/create', [CourseUserController::class, 'create'])->name('course_users.create');
+    Route::post('/course-users', [CourseUserController::class, 'store'])->name('course_users.store');
+    Route::get('/course-users/{courseUser}/edit', [CourseUserController::class, 'edit'])->name('course_users.edit');
+    Route::put('/course-users/{courseUser}', [CourseUserController::class, 'update'])->name('course_users.update');
+    Route::delete('/course-users/{courseUser}', [CourseUserController::class, 'destroy'])->name('course_users.destroy');
 
     Route::get('/enrollments', [EnrollmentController::class, 'index'])->name('enrollments.index');
     Route::get('/enrollments/create', [EnrollmentController::class, 'create'])->name('enrollments.create');

@@ -26,6 +26,9 @@
                     <x-nav-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.index')||request()->routeIs('enrollments.create')||request()->routeIs('enrollments.edit')||request()->routeIs('enrollments.show')">
                         {{ __('Enrollments') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('marks.index')" :active="request()->routeIs('marks.index')||request()->routeIs('marks.create')||request()->routeIs('marks.edit')">
+                        {{ __('Marks') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -91,6 +94,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.index')||request()->routeIs('enrollments.create')||request()->routeIs('enrollments.edit')||request()->routeIs('enrollments.show')">
                 {{ __('Enrollments') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('marks.index')" :active="request()->routeIs('marks.index')||request()->routeIs('marks.create')||request()->routeIs('marks.edit')">
+                {{ __('Marks') }}
             </x-responsive-nav-link>
         </div>
 
