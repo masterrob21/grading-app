@@ -37,6 +37,12 @@ class AcademicYearController extends Controller
 
         $validated['is_current'] = $request->has('is_current');
 
+        if ($validated['is_current'] && $this->hasAnotherActiveAcademicYear()) {
+            return back()
+                ->withErrors(['is_current' => 'Only one academic year can be active at a time.'])
+                ->withInput();
+        }
+
         AcademicYear::create($validated);
 
         return redirect()->route('academic_years.index')->with('success', 'Academic year created successfully.');
@@ -70,6 +76,12 @@ class AcademicYearController extends Controller
 
         $validated['is_current'] = $request->has('is_current');
 
+        if ($validated['is_current'] && $this->hasAnotherActiveAcademicYear($academicYear->id)) {
+            return back()
+                ->withErrors(['is_current' => 'Only one academic year can be active at a time.'])
+                ->withInput();
+        }
+
         $academicYear->update($validated);
 
         return redirect()->route('academic_years.index')->with('success', 'Academic year updated successfully.');
@@ -83,5 +95,12 @@ class AcademicYearController extends Controller
         $academicYear->delete();
 
         return redirect()->route('academic_years.index')->with('success', 'Academic year deleted successfully.');
+    }
+
+    private function hasAnotherActiveAcademicYear(?int $ignoreId = null): bool
+    {
+        return AcademicYear::where('is_current', true)
+            ->when($ignoreId, fn ($query) => $query->where('id', '!=', $ignoreId))
+            ->exists();
     }
 }

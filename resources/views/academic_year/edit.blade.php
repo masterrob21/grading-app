@@ -23,6 +23,9 @@
                             <input type="checkbox" name="is_current" id="is_current" value="1" class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" {{ old('is_current', $academicYear->is_current) ? 'checked' : '' }}>
                             <label for="is_current" class="text-sm text-gray-700">{{ __('Set as current academic year') }}</label>
                         </div>
+                        @error('is_current')
+                            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
 
                         <div class="flex items-center justify-end gap-4">
                             <a href="{{ route('academic_years.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest hover:bg-gray-400 transition">{{ __('Cancel') }}</a>
