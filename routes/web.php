@@ -106,6 +106,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/roles/{role}/edit', [RoleController::class, 'edit'])->name('roles.edit');
     Route::put('/roles/{role}', [RoleController::class, 'update'])->name('roles.update');
     Route::delete('/roles/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
+    Route::get('/role-permissions', [RoleController::class, 'permissionsIndex'])->name('roles.permissions.index');
+    Route::put('/role-permissions/{role}', [RoleController::class, 'permissionsUpdate'])->name('roles.permissions.update');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

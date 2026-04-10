@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Spatie\Permission\PermissionRegistrar;
+use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
@@ -92,5 +94,42 @@ class RoleController extends Controller
         $role->delete();
 
         return redirect()->route('roles.index')->with('success', 'Role deleted successfully.');
+    }
+
+    /**
+     * Show role-permission editor page.
+     */
+    public function permissionsIndex(Request $request)
+    {
+        $roles = Role::orderBy('name', 'asc')->get();
+        $permissionsByModule = Permission::orderBy('module')->orderBy('name')->get()->groupBy('module');
+
+        $selectedRole = null;
+        $selectedPermissionNames = [];
+
+        if ($request->filled('role')) {
+            $selectedRole = Role::with('permissions')->findOrFail((int) $request->input('role'));
+            $selectedPermissionNames = $selectedRole->permissions->pluck('name')->all();
+        }
+
+        return view('role_permission.index', compact('roles', 'permissionsByModule', 'selectedRole', 'selectedPermissionNames'));
+    }
+
+    /**
+     * Update permissions for the selected role.
+     */
+    public function permissionsUpdate(Request $request, Role $role)
+    {
+        $validated = $request->validate([
+            'permissions' => 'nullable|array',
+            'permissions.*' => 'string|exists:permissions,name',
+        ]);
+
+        $role->syncPermissions($validated['permissions'] ?? []);
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+        return redirect()
+            ->route('roles.permissions.index', ['role' => $role->id])
+            ->with('success', 'Role permissions updated successfully.');
     }
 }
