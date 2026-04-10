@@ -11,13 +11,20 @@ class AssessmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $courseId = $request->query('course_id');
+
         $assessments = Assessment::with('course')
+            ->when($courseId, fn ($query) => $query->where('course_id', $courseId))
             ->orderBy('title')
             ->get();
 
-        return view('assessment.index', compact('assessments'));
+        $courses = Course::whereIn('id', Assessment::pluck('course_id')->unique())
+            ->orderBy('course_code')
+            ->get();
+
+        return view('assessment.index', compact('assessments', 'courses', 'courseId'));
     }
 
     /**
