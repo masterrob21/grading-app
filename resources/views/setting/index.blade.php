@@ -32,6 +32,14 @@
                         </div>
 
                         <div class="border border-gray-200 rounded-lg p-2">
+                            <h4 class="text-lg font-semibold text-gray-900">{{ __('Role Permissions') }}</h4>
+                            <p class="mt-2 text-sm text-gray-600">{{ __('Create and manage permission for users.') }}</p>
+                            <a href="{{ route('roles.permissions.index') }}" class="mt-2 inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
+                                {{ __('Go to Permissions') }}
+                            </a>
+                        </div>
+
+                        <div class="border border-gray-200 rounded-lg p-2">
                             <h4 class="text-lg font-semibold text-gray-900">{{ __('Courses') }}</h4>
                             <p class="mt-2 text-sm text-gray-600">{{ __('Manage courses and their details.') }}</p>
                             <a href="{{ route('courses.index') }}" class="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
