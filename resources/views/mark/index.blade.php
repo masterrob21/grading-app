@@ -37,7 +37,7 @@
 
 			<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
 				<div class="p-6 text-gray-900">
-					<div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
+					<div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
 						<div>
 							<h3 class="text-lg font-semibold text-gray-900">{{ __('Entered Marks') }}</h3>
 							<p class="text-sm text-gray-500 mt-1">{{ __('Only marks entered by your account are shown here.') }}</p>
@@ -66,7 +66,7 @@
 					@if($marks->count())
 					<div class="overflow-x-auto">
 						<div class="flex flex-col md:flex-row space-x-2 gap-4">
-						@if(count($courses))
+							@if(count($courses))
 							<div class="mb-4 inline-flex flex-col sm:flex-row sm:items-center gap-2">
 								<label for="course_filter" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Filter by Course') }}</label>
 								<select id="course_filter" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="const assessmentFilter = document.getElementById('assessment_filter'); if (assessmentFilter) { assessmentFilter.value = ''; } updateFilters()">
@@ -89,7 +89,7 @@
 									<p class="text-xs text-gray-500 mt-2">{{ __('Select a course first to load assessment titles.') }}</p>
 								@endif
 							</div>
-					</div>
+						</div>
 							<table class="w-full text-sm text-left text-gray-600">
 								<thead class="text-xs uppercase bg-gray-100 text-gray-700">
 									<tr>
