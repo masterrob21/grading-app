@@ -19,30 +19,30 @@
 				</div>
 			@endif
 
-		@if(session('error'))
-			<div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm font-medium">
-				{{ session('error') }}
-			</div>
-		@endif
+			@if(session('error'))
+				<div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm font-medium">
+					{{ session('error') }}
+				</div>
+			@endif
 
-		@if($errors->any())
-			<div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
-				<ul class="text-sm text-red-800 list-disc pl-5 space-y-1">
-					@foreach($errors->all() as $error)
-						<li>{{ $error }}</li>
-					@endforeach
-				</ul>
-			</div>
-		@endif
+			@if($errors->any())
+				<div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+					<ul class="text-sm text-red-800 list-disc pl-5 space-y-1">
+						@foreach($errors->all() as $error)
+							<li>{{ $error }}</li>
+						@endforeach
+					</ul>
+				</div>
+			@endif
 
 			<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
 				<div class="p-6 text-gray-900">
-					<div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4">
+					<div class="flex flex-col md:flex-row md:justify-between md:items-start gap-4">
 						<div>
 							<h3 class="text-lg font-semibold text-gray-900">{{ __('Entered Marks') }}</h3>
 							<p class="text-sm text-gray-500 mt-1">{{ __('Only marks entered by your account are shown here.') }}</p>
 						</div>
-						<div class="flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto">
+						<div class="flex flex-col md:flex-row md:items-center gap-2 w-full md:w-auto">
 							<a href="{{ route('marks.sample_csv') }}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-200 transition whitespace-nowrap">
 								{{ __('Download Sample CSV') }}
 							</a>
@@ -64,7 +64,32 @@
 			<div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
 				<div class="p-6 text-gray-900">
 					@if($marks->count())
-						<div class="overflow-x-auto">
+					<div class="overflow-x-auto">
+						<div class="flex flex-col md:flex-row space-x-2 gap-4">
+						@if(count($courses))
+							<div class="mb-4 inline-flex flex-col sm:flex-row sm:items-center gap-2">
+								<label for="course_filter" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Filter by Course') }}</label>
+								<select id="course_filter" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="const assessmentFilter = document.getElementById('assessment_filter'); if (assessmentFilter) { assessmentFilter.value = ''; } updateFilters()">
+									<option value="">{{ __('All Courses') }}</option>
+									@foreach($courses as $course)
+										<option value="{{ $course->id }}" {{ $courseId == $course->id ? 'selected' : '' }}>{{ $course->course_code }} - {{ $course->title }}</option>
+									@endforeach
+								</select>
+							</div>
+							@endif
+							<div class="mb-4 inline-flex flex-col sm:flex-row sm:items-center gap-2">
+								<label for="assessment_filter" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Filter by Assessment') }}</label>
+								<select id="assessment_filter" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed" onchange="updateFilters()" {{ $courseId ? '' : 'disabled' }}>
+									<option value="">{{ __('All Assessments') }}</option>
+									@foreach($assessments as $assessment)
+										<option value="{{ $assessment->id }}" {{ $assessmentId == $assessment->id ? 'selected' : '' }}>{{ $assessment->title }}</option>
+									@endforeach
+								</select>
+								@if(!$courseId)
+									<p class="text-xs text-gray-500 mt-2">{{ __('Select a course first to load assessment titles.') }}</p>
+								@endif
+							</div>
+					</div>
 							<table class="w-full text-sm text-left text-gray-600">
 								<thead class="text-xs uppercase bg-gray-100 text-gray-700">
 									<tr>
@@ -151,6 +176,16 @@
 	</div>
 
 	<script type="module">
+		window.updateFilters = function () {
+			const courseId = document.getElementById('course_filter')?.value || '';
+			const assessmentId = document.getElementById('assessment_filter')?.value || '';
+			const params = new URLSearchParams();
+			if (courseId) params.append('course_id', courseId);
+			if (assessmentId) params.append('assessment_id', assessmentId);
+			const queryString = params.toString();
+			window.location.href = queryString ? '{{ route('marks.index') }}?' + queryString : '{{ route('marks.index') }}';
+		};
+
 		document.addEventListener('DOMContentLoaded', function () {
 			['success-message', 'warning-message'].forEach(function (id) {
 				const element = document.getElementById(id);
