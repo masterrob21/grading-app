@@ -56,15 +56,15 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'edit marks', 'guard_name' => 'web', 'module' => 'mark']);
         Permission::create(['name' => 'delete marks', 'guard_name' => 'web', 'module' => 'mark']);  
 
-        Permission::create(['name' => 'view assessments', 'guard_name' => 'web', 'module' => 'setting']);
-        Permission::create(['name' => 'add assessments', 'guard_name' => 'web', 'module' => 'setting']);
-        Permission::create(['name' => 'edit assessments', 'guard_name' => 'web', 'module' => 'setting']);
-        Permission::create(['name' => 'delete assessments', 'guard_name' => 'web', 'module' => 'setting']);
+        Permission::create(['name' => 'view assessments', 'guard_name' => 'web', 'module' => 'assessment']);
+        Permission::create(['name' => 'add assessments', 'guard_name' => 'web', 'module' => 'assessment']);
+        Permission::create(['name' => 'edit assessments', 'guard_name' => 'web', 'module' => 'assessment']);
+        Permission::create(['name' => 'delete assessments', 'guard_name' => 'web', 'module' => 'assessment']);
 
-        Permission::create(['name' => 'view enrollments', 'guard_name' => 'web', 'module' => 'setting']);
-        Permission::create(['name' => 'add enrollments', 'guard_name' => 'web', 'module' => 'setting']);
-        Permission::create(['name' => 'edit enrollments', 'guard_name' => 'web', 'module' => 'setting']);
-        Permission::create(['name' => 'delete enrollments', 'guard_name' => 'web', 'module' => 'setting']);
+        Permission::create(['name' => 'view enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
+        Permission::create(['name' => 'add enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
+        Permission::create(['name' => 'edit enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
+        Permission::create(['name' => 'delete enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
 
         // create roles
         Role::create(['name' => 'admin', 'guard_name' => 'web'])->givePermissionTo(Permission::all());
