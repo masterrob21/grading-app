@@ -35,6 +35,20 @@
                                 </td>
                             </tr>
                             <tr class="border-b border-gray-300">
+                                <td class="px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50">Roles</td>
+                                <td class="px-4 py-3 text-sm text-gray-900">
+                                    @if($user->roles->isNotEmpty())
+                                        <div class="flex flex-wrap gap-2">
+                                            @foreach($user->roles as $role)
+                                                <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs">{{ $role->name }}</span>
+                                            @endforeach
+                                        </div>
+                                    @else
+                                        <span class="text-gray-400">No roles assigned</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr class="border-b border-gray-300">
                                 <td class="px-4 py-3 text-sm font-medium text-gray-700 bg-gray-50">Created At</td>
                                 <td class="px-4 py-3 text-sm text-gray-900">{{ $user->created_at->format('M d, Y H:i') }}</td>
                             </tr>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -12,7 +13,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('name', 'asc')->get();
+        $users = User::with('roles')->orderBy('name', 'asc')->get();
+
         return view("user.index", compact('users'));
     }
 
@@ -21,7 +23,9 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view("user.create");
+        $roles = Role::orderBy('name', 'asc')->get();
+
+        return view('user.create', compact('roles'));
     }
 
     /**
@@ -29,16 +33,20 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'exists:roles,name',
         ]);
 
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
             'password' => bcrypt('Pass@1234'),
         ]);
+
+        $user->assignRole($validated['roles']);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
@@ -48,6 +56,8 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        $user->load('roles');
+
         return view("user.show", compact('user'));
     }
 
@@ -56,7 +66,10 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view("user.edit", compact('user'));
+        $user->load('roles');
+        $roles = Role::orderBy('name', 'asc')->get();
+
+        return view('user.edit', compact('user', 'roles'));
     }
 
     /**
@@ -64,15 +77,19 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'roles' => 'required|array|min:1',
+            'roles.*' => 'exists:roles,name',
         ]);
 
         $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
         ]);
+
+        $user->syncRoles($validated['roles']);
 
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }

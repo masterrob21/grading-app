@@ -33,6 +33,7 @@
                                         <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">#</th>
                                         <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Name</th>
                                         <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Email</th>
+                                        <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Roles</th>
                                         <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Verified</th>
                                         <th class="px-6 py-3 text-left text-sm font-semibold text-gray-700">Actions</th>
                                     </tr>
@@ -43,6 +44,17 @@
                                             <td class="px-6 py-2 text-sm text-gray-900">{{ $loop->iteration }}</td>
                                             <td class="px-6 py-2 text-sm text-gray-900 whitespace-nowrap">{{ $user->name }}</td>
                                             <td class="px-6 py-2 text-sm text-gray-900 whitespace-nowrap">{{ $user->email }}</td>
+                                            <td class="px-6 py-2 text-sm text-gray-900">
+                                                @if($user->roles->isNotEmpty())
+                                                    <div class="flex flex-wrap gap-2">
+                                                        @foreach($user->roles as $role)
+                                                            <span class="px-2 py-1 bg-indigo-100 text-indigo-800 rounded-full text-xs">{{ $role->name }}</span>
+                                                        @endforeach
+                                                    </div>
+                                                @else
+                                                    <span class="text-gray-400 text-xs">No roles assigned</span>
+                                                @endif
+                                            </td>
                                             <td class="px-6 py-2 text-sm text-gray-900 whitespace-nowrap">
                                                 @if($user->email_verified_at)
                                                     <span class="px-2 py-1 bg-green-100 text-green-800 rounded-full text-xs">Verified</span>
@@ -52,6 +64,7 @@
                                             </td>
                                             <td class="px-6 py-2 text-sm whitespace-nowrap">
                                                 <a href="{{ route('users.show', $user) }}" class="bg-blue-100 text-blue-700 hover:bg-blue-200 transition px-3 py-1.5 rounded-md mr-3">View</a>
+                                                <a href="{{ route('users.edit', $user) }}" class="bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition px-3 py-1.5 rounded-md mr-3">Edit</a>
                                                 <form method="POST" action="{{ route('users.destroy', $user) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
                                                     @csrf
                                                     @method('DELETE')

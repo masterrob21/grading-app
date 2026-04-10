@@ -33,6 +33,26 @@
                             @enderror
                         </div>
 
+                        <div class="mb-6">
+                            <label for="roles" class="block text-sm font-medium text-gray-700">Roles</label>
+                            <fieldset class="border-2 p-2 rounded-md">
+                                <legend>Available Roles</legend>
+                                @foreach ($roles as $role)
+                                <label class="inline-flex items-center">
+                                    <input type="checkbox" value="{{ $role->name }}" name="roles[]" class="form-checkbox h-5 w-5 text-blue-600">
+                                    <span class="ml-2 text-gray-700">{{ $role->name }}</span>
+                                </label> <br>
+                                @endforeach
+                            </fieldset>
+
+                            @error('roles')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                            @error('roles.*')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
                         <div class="flex items-center justify-between">
                             <a href="{{ route('users.index') }}" class="text-sm text-gray-600 hover:text-gray-900">Cancel</a>
                             <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:bg-blue-700 active:bg-blue-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
