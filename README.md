@@ -1,59 +1,101 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Grading System
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is a Laravel-based academic grading system for managing students, courses, assessments, marks, roles, and permissions in one platform.
 
-## About Laravel
+The system supports role-based access control, academic-year scoped records, and dashboard analytics for mark performance and enrollment tracking.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Core Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+- User management with multi-role assignment (Spatie roles)
+- Role CRUD and role-permission management
+- Department, student, course, and course-user management
+- Academic year management with active year support
+- Enrollment management (including bulk upload)
+- Assessment and mark management (including bulk upload)
+- Dashboard metrics and chart analytics
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Dashboard Highlights
 
-## Learning Laravel
+- Summary cards for users, students, departments, courses, active academic year, and active-year enrollments
+- Enrollment distribution by course for the active academic year
+- Mark analysis chart by course showing:
+    - average student total
+    - minimum student total
+    - maximum student total
+- Mark analytics are scoped to the active academic year
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+## Authentication and Access
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- Authentication is enabled (login, logout, password reset)
+- Self-registration is disabled
+- New user accounts are expected to be created by authorized administrators through the system
 
-## Laravel Sponsors
+## Technology Stack
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Laravel (PHP)
+- Blade templates
+- Tailwind CSS
+- Vite
+- Chart.js
+- Spatie laravel-permission
+- MySQL
 
-### Premium Partners
+## Main Modules
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- Users
+- Roles
+- Role Permissions
+- Departments
+- Students
+- Academic Years
+- Courses
+- Course Users
+- Enrollments
+- Assessments
+- Marks
+- Dashboard
 
-## Contributing
+## Setup Instructions
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+1. Clone the repository.
+2. Install PHP dependencies:
 
-## Code of Conduct
+```bash
+composer install
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+3. Install frontend dependencies:
 
-## Security Vulnerabilities
+```bash
+npm install
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+4. Create and configure environment file:
+
+```bash
+cp .env.example .env
+php artisan key:generate
+```
+
+5. Update database credentials in `.env`.
+6. Run migrations and seeders:
+
+```bash
+php artisan migrate --seed
+```
+
+7. Start the development servers:
+
+```bash
+php artisan serve
+npm run dev
+```
+
+## Notes
+
+- Ensure at least one `academic_years` record is marked as current (`is_current = true`) to enable active-year dashboard metrics.
+- Since registration routes are disabled, manage users from the authenticated admin area.
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the MIT license.
