@@ -23,11 +23,11 @@
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between items-center">
                         <div>
-                            <h3 class="text-lg font-semibold text-gray-900">{{ __('Manage course users') }}</h3>
+                            <h3 class="text-lg font-semibold text-gray-900">{{ __('Manage assigned courses') }}</h3>
                             <p class="text-sm text-gray-500 mt-1">{{ __('View, edit and delete course user assignments.') }}</p>
                         </div>
                         <a href="{{ route('course_users.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150">
-                            {{ __('Create Course User') }}
+                            {{ __('Assign course to user') }}
                         </a>
                     </div>
                 </div>
@@ -56,7 +56,7 @@
                                                 {{ $courseUser->course?->course_code ?? '-' }}
                                                 {{ $courseUser->course?->title ? ' - ' . $courseUser->course->title : '' }}
                                             </td>
-                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">{{ $courseUser->user?->name ?? '-' }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900 capitalize">{{ $courseUser->user?->name ?? '-' }}</td>
                                             <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">{{ $courseUser->user?->email ?? '-' }}</td>
                                             <td class="px-6 py-2 whitespace-nowrap text-sm space-x-2">
                                                 <a href="{{ route('course_users.edit', $courseUser->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition font-medium text-xs">{{ __('Edit') }}</a>

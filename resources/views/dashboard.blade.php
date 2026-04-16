@@ -92,7 +92,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg transition-colors duration-200 hover:bg-gray-50">
                 <div class="p-6">
                     <h3 class="text-xl font-semibold text-gray-900">Welcome back, {{ auth()->user()->name }}.</h3>
-                    <p class="mt-1 text-sm text-gray-600">Roles: <span class="font-medium text-gray-800">{{ $roleDisplay }}</span></p>
+                    <p class="mt-1 text-sm text-gray-600">Roles: <span class="font-medium text-red-800">{{ $roleDisplay }}</span></p>
                     <p class="mt-3 text-sm text-gray-500">Use the cards and quick links below to manage the grading system efficiently.</p>
                 </div>
             </div>

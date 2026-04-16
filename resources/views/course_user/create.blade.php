@@ -12,7 +12,7 @@
 
                         <div>
                             <label for="course_id" class="block text-sm font-medium text-gray-700">{{ __('Course') }}</label>
-                            <select name="course_id" id="course_id" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" required>
+                            <select name="course_id" id="course_id" class="uppercase mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" required>
                                 <option value="">{{ __('Select Course') }}</option>
                                 @foreach($courses as $course)
                                     <option value="{{ $course->id }}" {{ old('course_id') == $course->id ? 'selected' : '' }}>
@@ -27,7 +27,7 @@
 
                         <div>
                             <label for="user_id" class="block text-sm font-medium text-gray-700">{{ __('User') }}</label>
-                            <select name="user_id" id="user_id" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" required>
+                            <select name="user_id" id="user_id" class="capitalize mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" required>
                                 <option value="">{{ __('Select User') }}</option>
                                 @foreach($users as $user)
                                     <option value="{{ $user->id }}" {{ old('user_id') == $user->id ? 'selected' : '' }}>

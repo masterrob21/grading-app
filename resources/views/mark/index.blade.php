@@ -69,10 +69,10 @@
 							@if(count($courses))
 							<div class="mb-4 inline-flex flex-col sm:flex-row sm:items-center gap-2">
 								<label for="course_filter" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Filter by Course') }}</label>
-								<select id="course_filter" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="const assessmentFilter = document.getElementById('assessment_filter'); if (assessmentFilter) { assessmentFilter.value = ''; } updateFilters()">
+								<select id="course_filter" class="w-full uppercase px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="const assessmentFilter = document.getElementById('assessment_filter'); if (assessmentFilter) { assessmentFilter.value = ''; } updateFilters()">
 									<option value="">{{ __('All Courses') }}</option>
 									@foreach($courses as $course)
-										<option value="{{ $course->id }}" {{ $courseId == $course->id ? 'selected' : '' }}>{{ $course->course_code }} - {{ $course->title }}</option>
+										<option value="{{ $course->id }}" {{ $courseId == $course->id ? 'selected' : '' }}>{{ $course->course_code }}</option>
 									@endforeach
 								</select>
 							</div>
@@ -95,7 +95,7 @@
 									<tr>
 										<th class="px-6 py-3">{{ __('#') }}</th>
 										<th class="px-6 py-3 whitespace-nowrap">{{ __('Student ID') }}</th>
-										<th class="px-6 py-3">{{ __('Student Name') }}</th>
+										{{-- <th class="px-6 py-3">{{ __('Student Name') }}</th> --}}
 										<th class="px-6 py-3">{{ __('Course') }}</th>
 										<th class="px-6 py-3">{{ __('Assessment') }}</th>
 										<th class="px-6 py-3">{{ __('Score') }}</th>
@@ -108,7 +108,7 @@
 										<tr class="bg-white border-b hover:bg-gray-50 transition">
 											<td class="px-6 py-2 font-medium text-gray-900">{{ $index + 1 }}</td>
 											<td class="px-6 py-2 whitespace-nowrap">{{ $mark->enrollment?->student?->student_id ?? '-' }}</td>
-											<td class="px-6 py-2 whitespace-nowrap capitalize">{{ $mark->enrollment?->student?->full_name ?? '-' }}</td>
+											{{-- <td class="px-6 py-2 whitespace-nowrap capitalize">{{ $mark->enrollment?->student?->full_name ?? '-' }}</td> --}}
 											<td class="px-6 py-2 whitespace-nowrap">{{ $mark->assessment?->course?->course_code ?? '-' }} {{ $mark->assessment?->course?->title ? '- ' . $mark->assessment->course->title : '' }}</td>
 											<td class="px-6 py-2 whitespace-nowrap">{{ $mark->assessment?->title ?? '-' }}</td>
 											<td class="px-6 py-2">{{ number_format((float) $mark->score, 2) }}</td>

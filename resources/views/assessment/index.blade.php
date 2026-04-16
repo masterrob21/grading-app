@@ -42,7 +42,7 @@
 					@if(count($courses))
 						<div class="mb-4 inline-flex items-center gap-2">
 							<label for="course_filter" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Filter by Course') }}</label>
-							<select id="course_filter" class="px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="if(this.value) { window.location.href = '{{ route('assessments.index') }}?course_id=' + this.value; } else { window.location.href = '{{ route('assessments.index') }}'; }">
+							<select id="course_filter" class="uppercase px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="if(this.value) { window.location.href = '{{ route('assessments.index') }}?course_id=' + this.value; } else { window.location.href = '{{ route('assessments.index') }}'; }">
 								<option value="">{{ __('All Courses') }}</option>
 								@foreach($courses as $course)
 									<option value="{{ $course->id }}" {{ $courseId == $course->id ? 'selected' : '' }}>{{ $course->course_code }} - {{ $course->title }}</option>
