@@ -95,7 +95,7 @@ class StudentController extends Controller
         $student = Student::where('student_id', $student_id)->first();
 
         if ($student) {
-            return response()->json(['name' => $student->full_name]);
+            return response()->json(['name' => 'Valid ID']);//or $student->full_name
         }
 
         return response()->json(['error' => 'Student not found'], 404);
