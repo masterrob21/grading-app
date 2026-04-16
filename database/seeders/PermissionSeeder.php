@@ -65,6 +65,11 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'add enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
         Permission::create(['name' => 'edit enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
         Permission::create(['name' => 'delete enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
+        
+        Permission::create(['name' => 'view dashboard', 'guard_name' => 'web', 'module' => 'dashboard']);
+
+        Permission::create(['name' => 'view role permissions', 'guard_name' => 'web', 'module' => 'role_permission']);
+        Permission::create(['name' => 'edit role permissions', 'guard_name' => 'web', 'module' => 'role_permission']);
 
         // create roles
         Role::create(['name' => 'admin', 'guard_name' => 'web'])->givePermissionTo(Permission::all());
@@ -85,14 +90,11 @@ class PermissionSeeder extends Seeder
             'delete enrollments',
         ]);
         Role::create(['name' => 'lecturer', 'guard_name' => 'web'])->givePermissionTo([
-            'view students',
-            'view academic years',
-            'view courses',
-            'view course users',
             'view marks',
             'add marks',
             'edit marks',
             'delete marks',
+            'view dashboard',
         ]);
 
         // assign admin role to the default user
