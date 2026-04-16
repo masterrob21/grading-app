@@ -64,7 +64,7 @@
                 $firstRow = $rows->first();
 
                 return [
-                    'label' => trim(($firstRow->course_code ?? '') . ' - ' . ($firstRow->title ?? '')),
+                    'label' => trim(($firstRow->course_code ?? '') ),
                     'average_total' => round((float) $rows->avg('student_total_score'), 2),
                     'minimum_total' => round((float) $rows->min('student_total_score'), 2),
                     'maximum_total' => round((float) $rows->max('student_total_score'), 2),
