@@ -167,6 +167,7 @@
                 @endif
             </div>
 
+            @if (\App\Models\Mark::count() > 0)
             <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 transition-colors duration-200 hover:bg-gray-50">
                 <h4 class="text-lg font-semibold text-gray-900">Mark Score Analysis by Course</h4>
                 <p class="mt-1 text-sm text-gray-500">
@@ -196,6 +197,7 @@
                     <canvas id="marksDistributionChart" height="110"></canvas>
                 </div>
             </div>
+            @endif
 
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <div class="bg-white rounded-lg shadow-sm border border-gray-100 p-6 transition-colors duration-200 hover:bg-gray-50">
