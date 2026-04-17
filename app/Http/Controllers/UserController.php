@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -99,6 +100,14 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if ($user->id === Auth::id()) {
+            return redirect()->route('users.index')->with('error', 'You cannot delete your own account.');
+        }
+
+        if ($user->courses()->count() > 0) {
+            return redirect()->route('users.index')->with('error', 'Cannot delete user assigned to courses. Please reassign or remove courses first.');
+        }
+
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');

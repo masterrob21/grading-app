@@ -96,6 +96,10 @@ class AssessmentController extends Controller
      */
     public function destroy(Assessment $assessment)
     {
+        if ($assessment->marks()->exists()) {
+            return redirect()->route('assessments.index')->with('error', 'Cannot delete assessment with existing marks.');
+        }
+        
         $assessment->delete();
 
         return redirect()->route('assessments.index')->with('success', 'Assessment deleted successfully.');

@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('enrollments', function (Blueprint $table) {
             $table->id();
             $table->string('student_id');
-            $table->foreignId('course_id');
-            $table->foreignId('academic_year_id');
+            $table->foreignId('course_id')->constrained()->onDelete('cascade');
+            $table->foreignId('academic_year_id')->constrained()->onDelete('cascade');
             $table->timestamps();
 
             $table->foreign('student_id')->references('student_id')->on('students')->onDelete('cascade');

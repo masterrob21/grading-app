@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('course_code')->unique();
             $table->string('title');
             $table->integer('semester'); // 1 for first semester, 2 for second semester
+            $table->foreignId('user_id')->constrained()->onDelete('cascade'); //assign a lead lecturer to course
             $table->timestamps();
         });
     }

@@ -92,6 +92,10 @@ class AcademicYearController extends Controller
      */
     public function destroy(AcademicYear $academicYear)
     {
+        if ($academicYear->enrollments()->count() > 0) {
+            return redirect()->route('academic_years.index')->with('error', 'Cannot delete academic year. It has associated enrollments.');
+        }
+
         $academicYear->delete();
 
         return redirect()->route('academic_years.index')->with('success', 'Academic year deleted successfully.');
