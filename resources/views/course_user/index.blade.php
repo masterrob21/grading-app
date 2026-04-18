@@ -26,9 +26,11 @@
                             <h3 class="text-lg font-semibold text-gray-900">{{ __('Manage assigned courses') }}</h3>
                             <p class="text-sm text-gray-500 mt-1">{{ __('View, edit and delete course user assignments.') }}</p>
                         </div>
+                        @can('add course users')
                         <a href="{{ route('course_users.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-150">
                             {{ __('Assign course to user') }}
                         </a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -59,12 +61,16 @@
                                             <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900 capitalize">{{ $courseUser->user?->name ?? '-' }}</td>
                                             <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">{{ $courseUser->user?->email ?? '-' }}</td>
                                             <td class="px-6 py-2 whitespace-nowrap text-sm space-x-2">
+                                                @can('edit course users')
                                                 <a href="{{ route('course_users.edit', $courseUser->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition font-medium text-xs">{{ __('Edit') }}</a>
+                                                @endcan
+                                                @can('delete course users')
                                                 <form action="{{ route('course_users.destroy', $courseUser->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this course user assignment?') }}');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition font-medium text-xs">{{ __('Delete') }}</button>
                                                 </form>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
@@ -75,7 +81,9 @@
                         <div class="text-center py-12">
                             <h3 class="text-lg font-semibold text-gray-900">{{ __('No course users found') }}</h3>
                             <p class="mt-2 text-sm text-gray-500">{{ __('Create a course user assignment to get started.') }}</p>
+                            @can('add course users')
                             <a href="{{ route('course_users.create') }}" class="mt-6 inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">{{ __('Create Course User') }}</a>
+                            @endcan
                         </div>
                     @endif
                 </div>

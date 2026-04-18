@@ -28,9 +28,11 @@
                             <h3 class="text-lg font-semibold text-gray-900">{{ __('Manage Academic Year') }}</h3>
                             <p class="text-sm text-gray-500 mt-1">{{ __('View, show, and delete records.') }}</p>
                         </div>
+                        @can('add academic years')
                         <a href="{{ route('academic_years.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             {{ __('add Academic Year') }}
                         </a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -56,12 +58,17 @@
                                             <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-900">{{ $year->year }}</td>
                                             <td class="px-2 py-2 whitespace-nowrap text-sm text-gray-600">{{ $year->is_current ? __('Current') : __('Inactive') }}</td>
                                             <td class="px-2 py-2 text-sm">
+                                                @can('edit academic years')
                                                 <a href="{{ route('academic_years.edit', $year->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition font-medium text-xs mb-1 md:mb-0">{{ __('Edit') }}</a>
+                                                @endcan
+                                                
+                                                @can('delete academic years')
                                                 <form action="{{ route('academic_years.destroy', $year->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this academic year?') }}');">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition font-medium text-xs">{{ __('Delete') }}</button>
                                                 </form>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
@@ -71,8 +78,10 @@
                     @else
                         <div class="text-center py-12">
                             <h3 class="text-lg font-semibold text-gray-900">{{ __('No academic years found') }}</h3>
-                            <p class="mt-2 text-sm text-gray-500">{{ __('Create a new academic year to get started.') }}</p>
+                            <p class="mt-2 text-sm text-gray-500">{{ __('Create a new academic year to get started.') }}</p>                         
+                            @can('add academic years')
                             <a href="{{ route('academic_years.create') }}" class="mt-6 inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">{{ __('Add Academic Year') }}</a>
+                            @endcan
                         </div>
                     @endif
                 </div>

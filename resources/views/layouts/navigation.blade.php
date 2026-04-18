@@ -12,23 +12,33 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                    @can('view dashboard')   
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @endcan
 
+                    @can('view settings')
                     <x-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.index')">
                         {{ __('Settings') }}
                     </x-nav-link>
+                    @endcan
                     
+                    @can('view students')
                     <x-nav-link :href="route('students.index')" :active="request()->routeIs('students.index')||request()->routeIs('students.create')||request()->routeIs('students.edit')||request()->routeIs('students.show')">
                         {{ __('Student') }}
                     </x-nav-link>
+                    @endcan
+                    @can('view enrollments')
                     <x-nav-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.index')||request()->routeIs('enrollments.create')||request()->routeIs('enrollments.edit')||request()->routeIs('enrollments.show')">
                         {{ __('Enrollments') }}
                     </x-nav-link>
+                    @endcan
+                    @can('view marks')
                     <x-nav-link :href="route('marks.index')" :active="request()->routeIs('marks.index')||request()->routeIs('marks.create')||request()->routeIs('marks.edit')">
                         {{ __('Marks') }}
                     </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -81,23 +91,35 @@
     <!-- Responsive Navigation Menu -->
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
         <div class="pt-2 pb-3 space-y-1">
+            @can('view dashboard')
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @endcan
 
+            @can('view settings')
             <x-responsive-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.index')">
                 {{ __('Settings') }}
             </x-responsive-nav-link>
-            
+            @endcan
+
+            @can('view students')
             <x-responsive-nav-link :href="route('students.index')" :active="request()->routeIs('students.index')||request()->routeIs('students.create')||request()->routeIs('students.edit')||request()->routeIs('students.show')">
                 {{ __('Student') }}
             </x-responsive-nav-link>
+            @endcan
+
+            @can('view enrollments')
             <x-responsive-nav-link :href="route('enrollments.index')" :active="request()->routeIs('enrollments.index')||request()->routeIs('enrollments.create')||request()->routeIs('enrollments.edit')||request()->routeIs('enrollments.show')">
                 {{ __('Enrollments') }}
             </x-responsive-nav-link>
+            @endcan
+            
+            @can('view marks')
             <x-responsive-nav-link :href="route('marks.index')" :active="request()->routeIs('marks.index')||request()->routeIs('marks.create')||request()->routeIs('marks.edit')">
                 {{ __('Marks') }}
             </x-responsive-nav-link>
+            @endcan
         </div>
 
         <!-- Responsive Settings Options -->

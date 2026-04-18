@@ -38,12 +38,16 @@
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-3">
                         <a href="{{ route('students.index') }}" class="inline-flex items-center px-4 py-2 bg-gray-300 border border-transparent rounded-md font-semibold text-xs text-gray-800 uppercase tracking-widest hover:bg-gray-400 transition">{{ __('Back to list') }}</a>
                         <div class="flex flex-wrap gap-2">
+                            @can('edit students')
                             <a href="{{ route('students.edit', $student->id) }}" class="inline-flex items-center px-4 py-2 bg-yellow-100 text-yellow-700 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-yellow-200 transition">{{ __('Edit') }}</a>
+                            @endcan
+                            @can('delete students')
                             <form action="{{ route('students.destroy', $student->id) }}" method="POST" onsubmit="return confirm('{{ __('Are you sure you want to delete this student?') }}');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-md font-semibold text-xs uppercase tracking-widest hover:bg-red-200 transition">{{ __('Delete') }}</button>
                             </form>
+                            @endcan
                         </div>
                     </div>
                 </div>

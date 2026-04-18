@@ -41,12 +41,15 @@
                             <h3 class="text-lg font-semibold text-gray-900">{{ __('Manage Departments') }}</h3>
                             <p class="text-sm text-gray-500 mt-1">{{ __('View and manage all departments.') }}</p>
                         </div>
+                        
+                        @can('add departments')
                         <a href="{{ route('departments.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
                             {{ __('Add Department') }}
                         </a>
+                        @endcan
                     </div>
                 </div>
             </div>
@@ -78,13 +81,15 @@
                                                 {{ $department->created_at->format('M d, Y') }}
                                             </td>
                                             <td class="px-6 py-2 space-x-2 flex">
+                                                @can('edit departments')
                                                 <a href="{{ route('departments.edit', $department->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition font-medium text-xs">
                                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                                     </svg>
                                                     {{ __('Edit') }}
                                                 </a>
-
+                                                @endcan
+                                                @can('delete departments')
                                                 <form action="{{ route('departments.destroy', $department->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('{{ __('Are you sure you want to delete this department?') }}');">
                                                     @csrf
                                                     @method('DELETE')
@@ -95,6 +100,7 @@
                                                         {{ __('Delete') }}
                                                     </button>
                                                 </form>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach
@@ -109,12 +115,14 @@
                             <h3 class="mt-2 text-sm font-medium text-gray-900">{{ __('No departments') }}</h3>
                             <p class="mt-1 text-sm text-gray-500">{{ __('Get started by creating a new department.') }}</p>
                             <div class="mt-6">
+                                @can('add departments')
                                 <a href="{{ route('departments.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                                     </svg>
                                     {{ __('Create Department') }}
                                 </a>
+                                @endcan
                             </div>
                         </div>
                     @endif

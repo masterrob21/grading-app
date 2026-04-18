@@ -30,7 +30,7 @@
                                 {{ __('Go to Roles') }}
                             </a>
                         </div>
-
+                        @can('view role permissions')
                         <div class="border border-gray-200 rounded-lg p-2">
                             <h4 class="text-lg font-semibold text-gray-900">{{ __('Role Permissions') }}</h4>
                             <p class="mt-2 text-sm text-gray-600">{{ __('Create and manage permission for users.') }}</p>
@@ -38,6 +38,7 @@
                                 {{ __('Go to Permissions') }}
                             </a>
                         </div>
+                        @endcan
 
                         <div class="border border-gray-200 rounded-lg p-2">
                             <h4 class="text-lg font-semibold text-gray-900">{{ __('Courses') }}</h4>

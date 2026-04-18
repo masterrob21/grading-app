@@ -42,9 +42,11 @@
 							<p class="text-sm text-gray-500 mt-1">{{ __('View, show, and delete assessment records.') }}</p>
 							
 						</div>
+						@can('add assessments')
 						<a href="{{ route('assessments.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
 							{{ __('Add Assessment') }}
 						</a>
+						@endcan
 					</div>
 				</div>
 			</div>
@@ -89,6 +91,7 @@
 												<a href="{{ route('assessments.show', $assessment->id) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition font-medium text-xs mb-1 md:mb-0">
 													{{ __('Show') }}
 												</a>
+												@can('delete assessments')
 												<form action="{{ route('assessments.destroy', $assessment->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this assessment?') }}');">
 													@csrf
 													@method('DELETE')
@@ -96,6 +99,7 @@
 														{{ __('Delete') }}
 													</button>
 												</form>
+												@endcan
 											</td>
 										</tr>
 									@endforeach
@@ -106,9 +110,11 @@
 						<div class="text-center py-12">
 							<h3 class="text-lg font-semibold text-gray-900">{{ __('No assessments found') }}</h3>
 							<p class="mt-2 text-sm text-gray-500">{{ __('Create a new assessment to get started.') }}</p>
+							@can('add assessments')
 							<a href="{{ route('assessments.create') }}" class="mt-6 inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
 								{{ __('Add Assessment') }}
 							</a>
+							@endcan
 						</div>
 					@endif
 				</div>

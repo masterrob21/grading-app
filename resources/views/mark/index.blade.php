@@ -44,6 +44,7 @@
 							<p class="text-sm text-gray-500 mt-1">{{ __('Only marks entered by your account are shown here.') }}</p>
 						</div>
 						<div class="flex flex-col md:flex-row md:items-center gap-2 w-full md:w-auto">
+							@can('upload bulk marks')
 							<a href="{{ route('marks.sample_csv') }}" class="inline-flex items-center justify-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-200 transition whitespace-nowrap">
 								{{ __('Download Sample CSV') }}
 							</a>
@@ -54,9 +55,12 @@
 									{{ __('Upload Bulk List') }}
 								</button>
 							</form>
+							@endcan
+							@can('add marks')
 							<a href="{{ route('marks.create') }}" class="inline-flex items-center justify-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition whitespace-nowrap">
 								{{ __('Enter Mark') }}
 							</a>
+							@endcan
 						</div>
 					</div>
 				</div>
@@ -129,13 +133,18 @@
 															{{ __('Request Edit') }}
 														</button>
 													</form>
+													@can('delete marks')
 													<button type="button" disabled class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-400 rounded-md font-medium text-xs cursor-not-allowed">
 														{{ __('Delete') }}
 													</button>
+													@endcan
 												@else
+													@can('edit marks')
 													<a href="{{ route('marks.edit', $mark->id) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition font-medium text-xs mb-1 md:mb-0">
 														{{ __('Edit') }}
 													</a>
+													@endcan
+													@can('delete marks')
 													<form action="{{ route('marks.destroy', $mark->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this mark?') }}');">
 														@csrf
 														@method('DELETE')
@@ -143,6 +152,7 @@
 															{{ __('Delete') }}
 														</button>
 													</form>
+													@endcan
 												@endif
 											</td>
 										</tr>
@@ -155,6 +165,7 @@
 							<h3 class="text-lg font-semibold text-gray-900">{{ __('No marks found') }}</h3>
 							<p class="mt-2 text-sm text-gray-500">{{ __('Enter marks manually or upload a CSV list to get started.') }}</p>
 							<div class="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3">
+								@can('upload bulk marks')
 								<a href="{{ route('marks.sample_csv') }}" class="inline-flex items-center px-4 py-2 bg-gray-100 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-200 transition whitespace-nowrap">
 									{{ __('Download Sample CSV') }}
 								</a>
@@ -165,9 +176,12 @@
 										{{ __('Upload Bulk List') }}
 									</button>
 								</form>
+								@endcan
+								@can('add marks')
 								<a href="{{ route('marks.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition">
 									{{ __('Enter Mark') }}
 								</a>
+								@endcan
 							</div>
 							<p class="mt-3 text-xs text-gray-500">{{ __('CSV headers: student_id, course_code (or course_id), assessment_title (or assessment_id), score.') }}</p>
 						</div>

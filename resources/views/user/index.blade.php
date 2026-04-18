@@ -34,7 +34,9 @@
                             <p class="text-gray-600">Create, manage and remove users</p>    
                         </div>
                         <div class="flex justify-items-end">
+                            @can('add users')
                             <a href="{{ route('users.create') }}" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Add New</a>
+                            @endcan
                         </div>    
                     </div>
                     
@@ -77,12 +79,13 @@
                                             </td>
                                             <td class="px-6 py-2 text-sm whitespace-nowrap">
                                                 <a href="{{ route('users.show', $user) }}" class="bg-blue-100 text-blue-700 hover:bg-blue-200 transition px-3 py-1.5 rounded-md mr-3">View</a>
-                                                <a href="{{ route('users.edit', $user) }}" class="bg-yellow-100 text-yellow-700 hover:bg-yellow-200 transition px-3 py-1.5 rounded-md mr-3">Edit</a>
+                                                @can('delete users')
                                                 <form method="POST" action="{{ route('users.destroy', $user) }}" class="inline" onsubmit="return confirm('Are you sure you want to delete this user?')">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="submit" class="bg-red-100 text-red-700 hover:bg-red-200 transition px-3 py-1.5 rounded-md">Delete</button>
                                                 </form>
+                                                @endcan
                                             </td>
                                         </tr>
                                     @endforeach

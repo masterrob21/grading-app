@@ -35,6 +35,7 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'add students', 'guard_name' => 'web', 'module' => 'student']);
         Permission::create(['name' => 'edit students', 'guard_name' => 'web', 'module' => 'student']);
         Permission::create(['name' => 'delete students', 'guard_name' => 'web', 'module' => 'student']);
+        Permission::create(['name' => 'upload bulk students', 'guard_name' => 'web', 'module' => 'student']);
 
         Permission::create(['name' => 'view academic years', 'guard_name' => 'web', 'module' => 'academic_year']);
         Permission::create(['name' => 'add academic years', 'guard_name' => 'web', 'module' => 'academic_year']);
@@ -55,6 +56,7 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'add marks', 'guard_name' => 'web', 'module' => 'mark']);
         Permission::create(['name' => 'edit marks', 'guard_name' => 'web', 'module' => 'mark']);
         Permission::create(['name' => 'delete marks', 'guard_name' => 'web', 'module' => 'mark']);  
+        Permission::create(['name' => 'upload bulk marks', 'guard_name' => 'web', 'module' => 'mark']);  
 
         Permission::create(['name' => 'view assessments', 'guard_name' => 'web', 'module' => 'assessment']);
         Permission::create(['name' => 'add assessments', 'guard_name' => 'web', 'module' => 'assessment']);
@@ -65,8 +67,10 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'add enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
         Permission::create(['name' => 'edit enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
         Permission::create(['name' => 'delete enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
+        Permission::create(['name' => 'upload bulk enrollments', 'guard_name' => 'web', 'module' => 'enrollment']);
         
-        Permission::create(['name' => 'view dashboard', 'guard_name' => 'web', 'module' => 'dashboard']);
+        Permission::create(['name' => 'view dashboard', 'guard_name' => 'web', 'module' => 'navigation']);
+        Permission::create(['name' => 'view settings', 'guard_name' => 'web', 'module' => 'navigation']);
 
         Permission::create(['name' => 'view role permissions', 'guard_name' => 'web', 'module' => 'role_permission']);
         Permission::create(['name' => 'edit role permissions', 'guard_name' => 'web', 'module' => 'role_permission']);
