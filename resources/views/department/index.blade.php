@@ -42,7 +42,7 @@
                             <p class="text-sm text-gray-500 mt-1">{{ __('View and manage all departments.') }}</p>
                         </div>
                         
-                        @can('add departments')
+                        @can('create departments')
                         <a href="{{ route('departments.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
@@ -115,7 +115,7 @@
                             <h3 class="mt-2 text-sm font-medium text-gray-900">{{ __('No departments') }}</h3>
                             <p class="mt-1 text-sm text-gray-500">{{ __('Get started by creating a new department.') }}</p>
                             <div class="mt-6">
-                                @can('add departments')
+                                @can('create departments')
                                 <a href="{{ route('departments.create') }}" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition ease-in-out duration-150">
                                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>

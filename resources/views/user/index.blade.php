@@ -34,7 +34,7 @@
                             <p class="text-gray-600">Create, manage and remove users</p>    
                         </div>
                         <div class="flex justify-items-end">
-                            @can('add users')
+                            @can('create users')
                             <a href="{{ route('users.create') }}" class="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">Add New</a>
                             @endcan
                         </div>    
