@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -12,7 +13,8 @@ class CourseController extends Controller
      */
     public function index()
     {
-        $courses = Course::orderBy('course_code')->get();
+        $courses = Course::with('user')
+            ->orderBy('course_code')->get();
         return view('course.index', compact('courses'));
     }
 
@@ -21,7 +23,9 @@ class CourseController extends Controller
      */
     public function create()
     {
-        return view('course.create');
+        $users = User::orderBy('name')->get();
+        
+        return view('course.create', compact('users'));
     }
 
     /**
@@ -33,6 +37,7 @@ class CourseController extends Controller
             'course_code' => 'required|string|unique:courses|max:50',
             'title' => 'required|string|max:255',
             'semester' => 'required|integer|in:1,2',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         Course::create($validated);
@@ -53,7 +58,10 @@ class CourseController extends Controller
      */
     public function edit(Course $course)
     {
-        return view('course.edit', compact('course'));
+        $users = User::orderBy('name')->get();
+
+        return view('course.edit', compact('course', 'users'));
+      
     }
 
     /**
@@ -65,6 +73,7 @@ class CourseController extends Controller
             'course_code' => 'required|string|unique:courses,course_code,' . $course->id . '|max:50',
             'title' => 'required|string|max:255',
             'semester' => 'required|integer|in:1,2',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         $course->update($validated);

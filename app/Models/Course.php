@@ -23,7 +23,7 @@ class Course extends Model
         return $this->hasMany(CourseUser::class);
     }
 
-    public function leadLecturer()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

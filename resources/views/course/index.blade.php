@@ -60,6 +60,7 @@
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Course Code') }}</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Title') }}</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Semester') }}</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Lead') }}</th>
                                         <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">{{ __('Actions') }}</th>
                                     </tr>
                                 </thead>
@@ -69,7 +70,8 @@
                                             <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">{{ $index + 1 }}</td>
                                             <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900 uppercase">{{ $course->course_code }}</td>
                                             <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900 capitalize">{{ $course->title }}</td>
-                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-600">{{ $course->semester == 1 ? __('First Semester') : __('Second Semester') }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">{{ $course->semester == 1 ? __('First Semester') : __('Second Semester') }}</td>
+                                            <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900">{{ $course->user?->name }}</td>
                                             <td class="px-6 py-2 whitespace-nowrap text-sm space-x-2">
                                                 @can('edit courses')
                                                 <a href="{{ route('courses.edit', $course->id) }}" class="inline-flex items-center px-3 py-1.5 bg-yellow-100 text-yellow-700 rounded-md hover:bg-yellow-200 transition font-medium text-xs">{{ __('Edit') }}</a>
