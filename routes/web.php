@@ -100,6 +100,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/marks/{mark}', [MarkController::class, 'destroy'])->name('marks.destroy')->middleware('can:delete marks');
     Route::post('/marks/{mark}/request-edit', [MarkController::class, 'requestEdit'])->name('marks.request_edit');
 
+    Route::get('/mark-sheet', [MarkController::class, 'showMarkSheet'])->name('mark.sheet.index');
+
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index')->middleware('can:view roles');
     Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create')->middleware('can:create roles');
     Route::post('/roles', [RoleController::class, 'store'])->name('roles.store')->middleware('can:create roles');

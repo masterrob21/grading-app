@@ -434,4 +434,39 @@ class MarkController extends Controller
 
         return redirect()->route('marks.index')->with('success', $message);
     }
+
+    public function showMarksheet(Request $request)
+    {
+        $courseId = $request->query('course_id');
+        $assessmentId = $request->query('assessment_id');
+        $userId = Course::where('user_id', Auth::id())->pluck('id')->all();
+
+        $marks = Mark::with(['assessment.course', 'enrollment.student'])
+            ->where('user_id', $userId)
+            ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
+            ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
+            ->orderByDesc('id')
+            ->get();
+
+        $courses = Mark::where('user_id', $userId)
+            ->with('assessment.course')
+            ->get()
+            ->pluck('assessment.course')
+            ->unique('id')
+            ->sortBy('course_code')
+            ->values();
+
+        $assessments = $courseId
+            ? Mark::where('user_id', $userId)
+                ->with('assessment')
+                ->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId))
+                ->get()
+                ->pluck('assessment')
+                ->unique('id')
+                ->sortBy('title')
+                ->values()
+            : collect();
+
+        return view('mark.all_mark', compact('marks', 'courses', 'assessments', 'courseId', 'assessmentId'));
+    }
 }

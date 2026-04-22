@@ -29,7 +29,7 @@ class EnrollmentController extends Controller
     public function create()
     {
         $courses = Course::orderBy('course_code')->get();
-        $academicYears = AcademicYear::orderBy('year')->get();
+        $academicYears = AcademicYear::where('is_current', true)->orderBy('year')->get();
 
         return view('enrollment.create', compact('courses', 'academicYears'));
     }

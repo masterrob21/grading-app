@@ -32,7 +32,7 @@ class AcademicYearController extends Controller
     {
         $validated = $request->validate([
             'year' => 'required|string|max:10|unique:academic_years,year',
-            'is_current' => 'sometimes|boolean',
+            'is_current' => 'nullable|boolean',
         ]);
 
         $validated['is_current'] = $request->has('is_current');
@@ -71,7 +71,7 @@ class AcademicYearController extends Controller
     {
         $validated = $request->validate([
             'year' => 'required|string|max:10|unique:academic_years,year,' . $academicYear->id,
-            'is_current' => 'sometimes|boolean',
+            'is_current' => 'nullable|boolean',
         ]);
 
         $validated['is_current'] = $request->has('is_current');

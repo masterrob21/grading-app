@@ -39,6 +39,11 @@
                         {{ __('Marks') }}
                     </x-nav-link>
                     @endcan
+                    @can('view marks')
+                    <x-nav-link :href="route('mark.sheet.index')" :active="request()->routeIs('mark.sheet.index')">
+                        {{ __('Marksheet') }}
+                    </x-nav-link>
+                    @endcan
                 </div>
             </div>
 
@@ -118,6 +123,12 @@
             @can('view marks')
             <x-responsive-nav-link :href="route('marks.index')" :active="request()->routeIs('marks.index')||request()->routeIs('marks.create')||request()->routeIs('marks.edit')">
                 {{ __('Marks') }}
+            </x-responsive-nav-link>
+            @endcan
+
+            @can('view marks')
+            <x-responsive-nav-link :href="route('mark.sheet.index')" :active="request()->routeIs('mark.sheet.index')">
+                {{ __('Marksheet') }}
             </x-responsive-nav-link>
             @endcan
         </div>
