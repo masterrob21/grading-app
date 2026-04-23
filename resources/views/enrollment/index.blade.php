@@ -109,6 +109,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            <div>{{ $enrollments->onEachSide(2)->links() }}</div>
                         </div>
                     @else
                         <div class="text-center py-12">

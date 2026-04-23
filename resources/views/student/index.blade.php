@@ -107,6 +107,7 @@
                                     @endforeach
                                 </tbody>
                             </table>
+                            <div class="mt-2">{{ $students->onEachSide(2)->links() }}</div>
                         </div>
                     @else
                         <div class="text-center py-12">

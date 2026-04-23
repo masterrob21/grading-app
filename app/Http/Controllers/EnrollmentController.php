@@ -18,7 +18,7 @@ class EnrollmentController extends Controller
     {
         $enrollments = Enrollment::with(['student', 'course', 'academicYear'])
             ->orderBy('id', 'desc')
-            ->get();
+            ->paginate(50);
 
         return view('enrollment.index', compact('enrollments'));
     }
