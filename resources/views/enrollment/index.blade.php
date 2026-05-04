@@ -91,7 +91,7 @@
                                             <td class="px-6 py-2 capitalize">{{ $enrollment->student?->full_name ?? '-' }}</td>
                                             <td class="px-6 py-2 uppercase">{{ $enrollment->course?->course_code ?? '-' }} {{ $enrollment->course?->title ? '- ' . $enrollment->course->title : '' }}</td>
                                             <td class="px-6 py-2">{{ $enrollment->academicYear?->year ?? '-' }}</td>
-                                            <td class="px-6 py-2">
+                                            <td class="px-6 py-2 whitespace-nowrap">
                                                 <a href="{{ route('enrollments.show', $enrollment->id) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition font-medium text-xs mb-1 md:mb-0">
                                                     {{ __('Show') }}
                                                 </a>

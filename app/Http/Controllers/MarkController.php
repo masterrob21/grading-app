@@ -22,7 +22,10 @@ class MarkController extends Controller
             ->where('user_id', Auth::id())
             ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
             ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
-            ->orderByDesc('id')
+            ->orderBy(
+                Enrollment::select('student_id')
+                    ->whereColumn('enrollments.id', 'marks.enrollment_id')
+            )
             ->get();
 
         $courses = Mark::where('user_id', Auth::id())
@@ -445,7 +448,10 @@ class MarkController extends Controller
             ->where('user_id', $userId)
             ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
             ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
-            ->orderByDesc('id')
+            ->orderBy(
+                Enrollment::select('student_id')
+                    ->whereColumn('enrollments.id', 'marks.enrollment_id')
+            )
             ->get();
 
         $courses = Mark::where('user_id', $userId)
