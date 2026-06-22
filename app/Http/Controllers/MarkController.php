@@ -484,8 +484,8 @@ class MarkController extends Controller
         $assessmentId = $request->query('assessment_id');
         $userIds = Course::where('user_id', Auth::id())->pluck('id')->all();
 
-        $marks = Mark::with(['assessment.course', 'enrollment.student'])
-            ->where('user_id', $userIds)
+        $marks = Mark::with(['assessment.course', 'enrollment.student', 'user'])
+        
             ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
             ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
             ->orderBy(
@@ -500,7 +500,7 @@ class MarkController extends Controller
         return response()->streamDownload(function () use ($rows) {
             $output = fopen('php://output', 'w');
 
-            fputcsv($output, ['Student ID', 'Course Code', 'Course Title', 'Assessment', 'Score']);
+            fputcsv($output, ['Student ID', 'User Name', 'Course Code', 'Course Title', 'Assessment', 'Score']);
 
             foreach ($rows as $row) {
                 fputcsv($output, $row);
@@ -516,10 +516,9 @@ class MarkController extends Controller
     {
         $courseId = $request->query('course_id');
         $assessmentId = $request->query('assessment_id');
-        $userId = Course::where('user_id', Auth::id())->pluck('id')->all();
 
-        $marks = Mark::with(['assessment.course', 'enrollment.student'])
-            ->where('user_id', $userId)
+        $marks = Mark::with(['assessment.course', 'enrollment.student','enrollment.course', 'user'])
+            ->whereHas('enrollment.course', fn ($query) => $query->where('user_id', Auth::id()))
             ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
             ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
             ->orderBy(
@@ -528,17 +527,15 @@ class MarkController extends Controller
             )
             ->get();
 
-        $courses = Mark::where('user_id', $userId)
-            ->with('assessment.course')
+        $courses = Mark::with('assessment.course')
             ->get()
             ->pluck('assessment.course')
             ->unique('id')
             ->sortBy('course_code')
             ->values();
-
+    
         $assessments = $courseId
-            ? Mark::where('user_id', $userId)
-                ->with('assessment')
+            ? Mark::with('assessment')
                 ->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId))
                 ->get()
                 ->pluck('assessment')
@@ -557,6 +554,7 @@ class MarkController extends Controller
 
             return [
                 $mark->enrollment?->student?->student_id ?? '-',
+                $mark->user?->name ?? '-',
                 $course?->course_code ?? '-',
                 $course?->title ?? '-',
                 $mark->assessment?->title ?? '-',

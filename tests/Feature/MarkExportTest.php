@@ -122,3 +122,21 @@ test('csv export returns only rows matching selected filters', function () {
         ->toContain('STU001')
         ->not->toContain('STU002');
 });
+
+test('pdf export returns valid pdf content and honors filters', function () {
+    $user = User::factory()->create();
+    $filters = seedMarkExportFixture($user);
+
+    actingAs($user);
+    $response = get(route('marks.export.pdf', $filters));
+
+    $response->assertOk();
+    $response->assertHeader('content-type', 'application/pdf');
+
+    $content = $response->getContent();
+
+    expect($content)
+        ->toStartWith('%PDF-1.4')
+        ->toContain('STU001')
+        ->not->toContain('STU002');
+});

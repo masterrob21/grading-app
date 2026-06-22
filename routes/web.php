@@ -101,7 +101,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/marks/{mark}', [MarkController::class, 'destroy'])->name('marks.destroy')->middleware('can:delete marks');
     Route::post('/marks/{mark}/request-edit', [MarkController::class, 'requestEdit'])->name('marks.request_edit');
 
-    Route::get('/marksheet', [MarkController::class, 'showMarkSheet'])->name('marksheet.index');
+    Route::get('/marksheet', [MarkController::class, 'showMarkSheet'])->name('marksheet.index')->middleware('can:view marksheet');
     Route::get('/marksheet/export/csv', [MarkController::class, 'exportMarksheetCsv'])->name('marksheet.export.csv');
 
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index')->middleware('can:view roles');

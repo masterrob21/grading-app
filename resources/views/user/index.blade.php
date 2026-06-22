@@ -59,7 +59,7 @@
                                             <td class="px-6 py-2 text-sm text-gray-900">{{ $loop->iteration }}</td>
                                             <td class="px-6 py-2 text-sm text-gray-900 whitespace-nowrap">{{ $user->name }}</td>
                                             <td class="px-6 py-2 text-sm text-gray-900 whitespace-nowrap">{{ $user->email }}</td>
-                                            <td class="px-6 py-2 text-sm text-gray-900">
+                                            <td class="px-6 py-2 text-sm text-gray-900 whitespace-nowrap">
                                                 @if($user->roles->isNotEmpty())
                                                     <div class="flex flex-wrap gap-2">
                                                         @foreach($user->roles as $role)

@@ -97,7 +97,7 @@
 									<tr>
 										<th class="px-6 py-3">{{ __('#') }}</th>
 										<th class="px-6 py-3 whitespace-nowrap">{{ __('Student ID') }}</th>
-										{{-- <th class="px-6 py-3">{{ __('Student Name') }}</th> --}}
+										<th class="px-6 py-3">{{ __('User Name') }}</th>
 										<th class="px-6 py-3">{{ __('Course') }}</th>
 										<th class="px-6 py-3">{{ __('Assessment') }}</th>
 										<th class="px-6 py-3">{{ __('Score') }}</th>
@@ -110,7 +110,7 @@
 										<tr class="bg-white border-b hover:bg-gray-50 transition">
 											<td class="px-6 py-2 font-medium text-gray-900">{{ $index + 1 }}</td>
 											<td class="px-6 py-2 whitespace-nowrap">{{ $mark->enrollment?->student?->student_id ?? '-' }}</td>
-											{{-- <td class="px-6 py-2 whitespace-nowrap capitalize">{{ $mark->enrollment?->student?->full_name ?? '-' }}</td> --}}
+											<td class="px-6 py-2 whitespace-nowrap">{{ $mark->user?->name ?? '-' }}</td>
 											<td class="px-6 py-2 whitespace-nowrap">{{ $mark->assessment?->course?->course_code ?? '-' }} {{ $mark->assessment?->course?->title ? '- ' . $mark->assessment->course->title : '' }}</td>
 											<td class="px-6 py-2 whitespace-nowrap">{{ $mark->assessment?->title ?? '-' }}</td>
 											<td class="px-6 py-2">{{ number_format((float) $mark->score, 2) }}</td>
