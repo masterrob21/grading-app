@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\AcademicYearController;
+use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseUserController;
 use App\Http\Controllers\DepartmentController;
-use App\Http\Controllers\StudentController;
 use App\Http\Controllers\EnrollmentController;
-use App\Http\Controllers\AssessmentController;
 use App\Http\Controllers\MarkController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -91,6 +91,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/assessments/{assessment}', [AssessmentController::class, 'destroy'])->name('assessments.destroy')->middleware('can:delete assessments');
 
     Route::get('/marks', [MarkController::class, 'index'])->name('marks.index')->middleware('can:view marks');
+    Route::get('/marks/export/csv', [MarkController::class, 'exportCsv'])->name('marks.export.csv')->middleware('can:view marks');
     Route::get('/marks/create', [MarkController::class, 'create'])->name('marks.create')->middleware('can:create marks');
     Route::get('/marks/sample-csv', [MarkController::class, 'downloadSampleCsv'])->name('marks.sample_csv');
     Route::post('/marks/bulk-upload', [MarkController::class, 'bulkUpload'])->name('marks.bulk_upload');
@@ -100,7 +101,8 @@ Route::middleware('auth')->group(function () {
     Route::delete('/marks/{mark}', [MarkController::class, 'destroy'])->name('marks.destroy')->middleware('can:delete marks');
     Route::post('/marks/{mark}/request-edit', [MarkController::class, 'requestEdit'])->name('marks.request_edit');
 
-    Route::get('/mark-sheet', [MarkController::class, 'showMarkSheet'])->name('mark.sheet.index');
+    Route::get('/marksheet', [MarkController::class, 'showMarkSheet'])->name('marksheet.index');
+    Route::get('/marksheet/export/csv', [MarkController::class, 'exportMarksheetCsv'])->name('marksheet.export.csv');
 
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index')->middleware('can:view roles');
     Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create')->middleware('can:create roles');

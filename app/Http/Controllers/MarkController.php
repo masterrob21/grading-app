@@ -9,6 +9,7 @@ use App\Models\Enrollment;
 use App\Models\Mark;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 
 class MarkController extends Controller
@@ -357,12 +358,14 @@ class MarkController extends Controller
             if ($studentId === '' || $score === '') {
                 $skipped++;
                 $rowErrors[] = "Line {$lineNumber}: missing student_id or score.";
+
                 continue;
             }
 
             if (! is_numeric($score)) {
                 $skipped++;
                 $rowErrors[] = "Line {$lineNumber}: score must be numeric.";
+
                 continue;
             }
 
@@ -380,6 +383,7 @@ class MarkController extends Controller
             if (! $courseId) {
                 $skipped++;
                 $rowErrors[] = "Line {$lineNumber}: invalid course reference.";
+
                 continue;
             }
 
@@ -397,6 +401,7 @@ class MarkController extends Controller
             if (! $assessmentId) {
                 $skipped++;
                 $rowErrors[] = "Line {$lineNumber}: invalid assessment reference.";
+
                 continue;
             }
 
@@ -405,6 +410,7 @@ class MarkController extends Controller
             if (! $enrollment) {
                 $skipped++;
                 $rowErrors[] = "Line {$lineNumber}: no enrollment found for student in course.";
+
                 continue;
             }
 
@@ -414,6 +420,7 @@ class MarkController extends Controller
 
             if ($existingMark) {
                 $skipped++;
+
                 continue;
             }
 
@@ -436,6 +443,73 @@ class MarkController extends Controller
         }
 
         return redirect()->route('marks.index')->with('success', $message);
+    }
+
+    public function exportCsv(Request $request)
+    {
+        $courseId = $request->query('course_id');
+        $assessmentId = $request->query('assessment_id');
+
+        $marks = Mark::with(['assessment.course', 'enrollment.student'])
+            ->where('user_id', Auth::id())
+            ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
+            ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
+            ->orderBy(
+                Enrollment::select('student_id')
+                    ->whereColumn('enrollments.id', 'marks.enrollment_id')
+            )
+            ->get();
+
+        $rows = $this->prepareExportRows($marks);
+        $filename = 'marks_'.now()->format('Ymd_His').'.csv';
+
+        return response()->streamDownload(function () use ($rows) {
+            $output = fopen('php://output', 'w');
+
+            fputcsv($output, ['Student ID', 'Course Code', 'Course Title', 'Assessment', 'Score']);
+
+            foreach ($rows as $row) {
+                fputcsv($output, $row);
+            }
+
+            fclose($output);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
+    }
+
+    public function exportMarksheetCsv(Request $request)
+    {
+        $courseId = $request->query('course_id');
+        $assessmentId = $request->query('assessment_id');
+        $userIds = Course::where('user_id', Auth::id())->pluck('id')->all();
+
+        $marks = Mark::with(['assessment.course', 'enrollment.student'])
+            ->where('user_id', $userIds)
+            ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
+            ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
+            ->orderBy(
+                Enrollment::select('student_id')
+                    ->whereColumn('enrollments.id', 'marks.enrollment_id')
+            )
+            ->get();
+
+        $rows = $this->prepareExportRows($marks);
+        $filename = 'marksheet_'.now()->format('Ymd_His').'.csv';
+
+        return response()->streamDownload(function () use ($rows) {
+            $output = fopen('php://output', 'w');
+
+            fputcsv($output, ['Student ID', 'Course Code', 'Course Title', 'Assessment', 'Score']);
+
+            foreach ($rows as $row) {
+                fputcsv($output, $row);
+            }
+
+            fclose($output);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
+        ]);
     }
 
     public function showMarksheet(Request $request)
@@ -473,6 +547,21 @@ class MarkController extends Controller
                 ->values()
             : collect();
 
-        return view('mark.all_mark', compact('marks', 'courses', 'assessments', 'courseId', 'assessmentId'));
+        return view('marksheet.index', compact('marks', 'courses', 'assessments', 'courseId', 'assessmentId'));
+    }
+
+    private function prepareExportRows(Collection $marks): array
+    {
+        return $marks->map(function (Mark $mark) {
+            $course = $mark->assessment?->course;
+
+            return [
+                $mark->enrollment?->student?->student_id ?? '-',
+                $course?->course_code ?? '-',
+                $course?->title ?? '-',
+                $mark->assessment?->title ?? '-',
+                number_format((float) $mark->score, 2, '.', ''),
+            ];
+        })->all();
     }
 }
