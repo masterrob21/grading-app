@@ -13,6 +13,12 @@
 				</div>
 			@endif
 
+			@if(session('status'))
+				<div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm font-medium">
+					{{ session('status') }}
+				</div>
+			@endif
+
 			@if(session('warning'))
 				<div id="warning-message" class="mb-4 p-4 bg-amber-50 border border-amber-200 rounded-lg text-amber-800 text-sm font-medium">
 					{{ session('warning') }}

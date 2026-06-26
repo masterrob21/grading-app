@@ -17,6 +17,7 @@ class AssessmentController extends Controller
 
         $assessments = Assessment::with('course')
             ->when($courseId, fn ($query) => $query->where('course_id', $courseId))
+            ->orderBy('course_id')
             ->orderBy('title')
             ->get();
 

@@ -85,6 +85,12 @@ class MarkController extends Controller
                 ->withInput();
         }
 
+        if ((float) $validated['score'] > (float) $assessment->max_score) {
+            return back()
+                ->withErrors(['score' => 'The score cannot be greater than the assessment maximum score.'])
+                ->withInput();
+        }
+
         $enrollment = $this->resolveEnrollment($validated['student_id'], (int) $validated['course_id']);
 
         if (! $enrollment) {
@@ -153,6 +159,12 @@ class MarkController extends Controller
         if ((int) $assessment->course_id !== (int) $validated['course_id']) {
             return back()
                 ->withErrors(['assessment_id' => 'The selected assessment does not belong to the selected course.'])
+                ->withInput();
+        }
+
+        if ((float) $validated['score'] > (float) $assessment->max_score) {
+            return back()
+                ->withErrors(['score' => 'The score cannot be greater than the assessment maximum score.'])
                 ->withInput();
         }
 
@@ -330,11 +342,21 @@ class MarkController extends Controller
             ->mapWithKeys(fn ($id) => [(string) $id => $id])
             ->all();
 
-        $assessmentTitleMap = Assessment::whereIn('course_id', $assignedCourseIds)->pluck('id', 'title')
-            ->mapWithKeys(fn ($id, $title) => [strtolower(trim((string) $title)) => $id])
+        $assessments = Assessment::whereIn('course_id', $assignedCourseIds)
+            ->get(['id', 'course_id', 'title', 'max_score']);
+        $assessmentTitleByCourseMap = $assessments
+            ->mapWithKeys(fn ($assessment) => [
+                ((string) $assessment->course_id).'|'.strtolower(trim((string) $assessment->title)) => (int) $assessment->id,
+            ])
             ->all();
-        $assessmentIdMap = Assessment::whereIn('course_id', $assignedCourseIds)->pluck('id')
-            ->mapWithKeys(fn ($id) => [(string) $id => $id])
+        $assessmentIdMap = $assessments
+            ->mapWithKeys(fn ($assessment) => [(string) $assessment->id => (int) $assessment->id])
+            ->all();
+        $assessmentCourseMap = $assessments
+            ->mapWithKeys(fn ($assessment) => [(string) $assessment->id => (int) $assessment->course_id])
+            ->all();
+        $assessmentMaxScoreMap = $assessments
+            ->mapWithKeys(fn ($assessment) => [(string) $assessment->id => (float) $assessment->max_score])
             ->all();
 
         $created = 0;
@@ -394,13 +416,37 @@ class MarkController extends Controller
             if (! $assessmentId) {
                 $assessmentTitle = strtolower(trim((string) ($record['assessment_title'] ?? '')));
                 if ($assessmentTitle !== '') {
-                    $assessmentId = $assessmentTitleMap[$assessmentTitle] ?? null;
+                    $assessmentKey = ((string) $courseId).'|'.$assessmentTitle;
+                    $assessmentId = $assessmentTitleByCourseMap[$assessmentKey] ?? null;
                 }
             }
 
             if (! $assessmentId) {
                 $skipped++;
                 $rowErrors[] = "Line {$lineNumber}: invalid assessment reference.";
+
+                continue;
+            }
+
+            if ((int) ($assessmentCourseMap[(string) $assessmentId] ?? 0) !== (int) $courseId) {
+                $skipped++;
+                $rowErrors[] = "Line {$lineNumber}: assessment does not belong to the selected course.";
+
+                continue;
+            }
+
+            $assessmentMaxScore = $assessmentMaxScoreMap[(string) $assessmentId] ?? null;
+
+            if ($assessmentMaxScore === null) {
+                $skipped++;
+                $rowErrors[] = "Line {$lineNumber}: assessment maximum score is unavailable.";
+
+                continue;
+            }
+
+            if ((float) $score > (float) $assessmentMaxScore) {
+                $skipped++;
+                $rowErrors[] = "Line {$lineNumber}: score cannot be greater than assessment maximum score ({$assessmentMaxScore}).";
 
                 continue;
             }
@@ -420,6 +466,7 @@ class MarkController extends Controller
 
             if ($existingMark) {
                 $skipped++;
+                $rowErrors[] = "Line {$lineNumber}: mark already exists for this student enrollment and assessment.";
 
                 continue;
             }
@@ -442,7 +489,7 @@ class MarkController extends Controller
             $message .= ' Issues: '.implode(' ', array_slice($rowErrors, 0, 5));
         }
 
-        return redirect()->route('marks.index')->with('success', $message);
+        return redirect()->route('marks.index')->with('status', $message);
     }
 
     public function exportCsv(Request $request)
