@@ -218,7 +218,129 @@ class MarkController extends Controller
             return redirect()->route('marks.edit', $mark);
         }
 
-        return redirect()->route('marks.index')->with('warning', 'This mark is locked. An administrator needs to unlock it before you can edit it.');
+        return redirect()->route('marks.index')->with('warning', 'This mark is locked. The course lead needs to unlock it before you can edit it.');
+    }
+
+    public function lock(Mark $mark): RedirectResponse
+    {
+        $this->ensureCourseOwner($mark);
+
+        if ($mark->is_locked) {
+            return redirect()->route('marksheet.index')->with('warning', 'This mark is already locked.');
+        }
+
+        $mark->update([
+            'is_locked' => true,
+        ]);
+
+        return redirect()->route('marksheet.index')->with('success', 'Mark locked successfully.');
+    }
+
+    public function bulkLock(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'mark_ids' => 'required|array|min:1',
+            'mark_ids.*' => 'required|integer|exists:marks,id',
+        ]);
+
+        $selectedIds = collect($validated['mark_ids'])
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        $eligibleMarks = Mark::with('enrollment.course')
+            ->whereIn('id', $selectedIds)
+            ->get()
+            ->filter(fn (Mark $mark) => (int) ($mark->enrollment?->course?->user_id ?? 0) === (int) Auth::id())
+            ->values();
+
+        $lockableIds = $eligibleMarks
+            ->filter(fn (Mark $mark) => ! $mark->is_locked)
+            ->pluck('id')
+            ->all();
+
+        if (! empty($lockableIds)) {
+            Mark::whereIn('id', $lockableIds)->update([
+                'is_locked' => true,
+            ]);
+        }
+
+        $lockedCount = count($lockableIds);
+        $alreadyLockedCount = $eligibleMarks->count() - $lockedCount;
+        $unauthorizedCount = $selectedIds->count() - $eligibleMarks->count();
+
+        $message = "Bulk lock completed. Locked: {$lockedCount}.";
+
+        if ($alreadyLockedCount > 0) {
+            $message .= " Already locked: {$alreadyLockedCount}.";
+        }
+
+        if ($unauthorizedCount > 0) {
+            $message .= " Skipped (outside your courses): {$unauthorizedCount}.";
+        }
+
+        return redirect()->route('marksheet.index')->with($lockedCount > 0 ? 'success' : 'warning', $message);
+    }
+
+    public function unlock(Mark $mark): RedirectResponse
+    {
+        $this->ensureCourseOwner($mark);
+
+        if (! $mark->is_locked) {
+            return redirect()->route('marksheet.index')->with('warning', 'This mark is already editable.');
+        }
+
+        $mark->update([
+            'is_locked' => false,
+        ]);
+
+        return redirect()->route('marksheet.index')->with('success', 'Mark unlocked successfully.');
+    }
+
+    public function bulkUnlock(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'mark_ids' => 'required|array|min:1',
+            'mark_ids.*' => 'required|integer|exists:marks,id',
+        ]);
+
+        $selectedIds = collect($validated['mark_ids'])
+            ->map(fn ($id) => (int) $id)
+            ->unique()
+            ->values();
+
+        $eligibleMarks = Mark::with('enrollment.course')
+            ->whereIn('id', $selectedIds)
+            ->get()
+            ->filter(fn (Mark $mark) => (int) ($mark->enrollment?->course?->user_id ?? 0) === (int) Auth::id())
+            ->values();
+
+        $unlockableIds = $eligibleMarks
+            ->filter(fn (Mark $mark) => $mark->is_locked)
+            ->pluck('id')
+            ->all();
+
+        if (! empty($unlockableIds)) {
+            Mark::whereIn('id', $unlockableIds)->update([
+                'is_locked' => false,
+            ]);
+        }
+
+        $unlockedCount = count($unlockableIds);
+        $alreadyEditableCount = $eligibleMarks->count() - $unlockedCount;
+        $unauthorizedCount = $selectedIds->count() - $eligibleMarks->count();
+
+        $message = "Bulk unlock completed. Unlocked: {$unlockedCount}.";
+
+        if ($alreadyEditableCount > 0) {
+            $message .= " Already editable: {$alreadyEditableCount}.";
+        }
+
+        if ($unauthorizedCount > 0) {
+            $message .= " Skipped (outside your courses): {$unauthorizedCount}.";
+        }
+
+        return redirect()->route('marksheet.index')->with($unlockedCount > 0 ? 'success' : 'warning', $message);
     }
 
     private function resolveEnrollment(string $studentId, int $courseId): ?Enrollment
@@ -233,6 +355,13 @@ class MarkController extends Controller
     private function ensureOwner(Mark $mark): void
     {
         abort_unless((int) $mark->user_id === (int) Auth::id(), 403);
+    }
+
+    private function ensureCourseOwner(Mark $mark): void
+    {
+        $mark->loadMissing('enrollment.course');
+
+        abort_unless((int) ($mark->enrollment?->course?->user_id ?? 0) === (int) Auth::id(), 403);
     }
 
     public function downloadSampleCsv()
@@ -529,12 +658,14 @@ class MarkController extends Controller
     {
         $courseId = $request->query('course_id');
         $assessmentId = $request->query('assessment_id');
+        $studentId = trim((string) $request->query('student_id', ''));
         $userIds = Course::where('user_id', Auth::id())->pluck('id')->all();
 
         $marks = Mark::with(['assessment.course', 'enrollment.student', 'user'])
         
             ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
             ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
+            ->when($studentId !== '', fn ($query) => $query->whereHas('enrollment.student', fn ($q) => $q->where('student_id', 'like', '%'.$studentId.'%')))
             ->orderBy(
                 Enrollment::select('student_id')
                     ->whereColumn('enrollments.id', 'marks.enrollment_id')
@@ -563,11 +694,13 @@ class MarkController extends Controller
     {
         $courseId = $request->query('course_id');
         $assessmentId = $request->query('assessment_id');
+        $studentId = trim((string) $request->query('student_id', ''));
 
         $marks = Mark::with(['assessment.course', 'enrollment.student','enrollment.course', 'user'])
             ->whereHas('enrollment.course', fn ($query) => $query->where('user_id', Auth::id()))
             ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
             ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
+            ->when($studentId !== '', fn ($query) => $query->whereHas('enrollment.student', fn ($q) => $q->where('student_id', 'like', '%'.$studentId.'%')))
             ->orderBy(
                 Enrollment::select('student_id')
                     ->whereColumn('enrollments.id', 'marks.enrollment_id')
@@ -591,7 +724,7 @@ class MarkController extends Controller
                 ->values()
             : collect();
 
-        return view('marksheet.index', compact('marks', 'courses', 'assessments', 'courseId', 'assessmentId'));
+        return view('marksheet.index', compact('marks', 'courses', 'assessments', 'courseId', 'assessmentId', 'studentId'));
     }
 
     private function prepareExportRows(Collection $marks): array

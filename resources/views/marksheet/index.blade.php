@@ -56,8 +56,15 @@
 						$exportQuery = array_filter([
 							'course_id' => $courseId,
 							'assessment_id' => $assessmentId,
+							'student_id' => $studentId ?? null,
 						], fn ($value) => filled($value));
 					@endphp
+					<form id="bulk-lock-form" action="{{ route('marksheet.bulk_lock') }}" method="POST" class="hidden">
+						@csrf
+					</form>
+					<form id="bulk-unlock-form" action="{{ route('marksheet.bulk_unlock') }}" method="POST" class="hidden">
+						@csrf
+					</form>
 					<div class="overflow-x-auto">
 						<div class="flex flex-col md:flex-row space-x-2 gap-4">
 							@if(count($courses))
@@ -84,6 +91,15 @@
 								@endif
 							</div>
 							<div class="mb-4 inline-flex flex-col sm:flex-row sm:items-center gap-2">
+								<label for="student_id_filter" class="block text-sm font-medium text-gray-700 mb-2">{{ __('Search Student ID') }}</label>
+								<div class="flex items-center gap-2">
+									<input id="student_id_filter" type="text" value="{{ $studentId ?? '' }}" placeholder="{{ __('e.g. STU001') }}" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+									<button type="button" onclick="updateFilters()" class="inline-flex items-center px-3 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 transition whitespace-nowrap">
+										{{ __('Search') }}
+									</button>
+								</div>
+							</div>
+							<div class="mb-4 inline-flex flex-col sm:flex-row sm:items-center gap-2">
 								<span class="block text-sm font-medium text-gray-700 mb-2">{{ __('Export') }}</span>
 								<div class="flex items-center gap-2">
 									<a href="{{ route('marksheet.export.csv', $exportQuery) }}" class="inline-flex items-center px-3 py-2 bg-gray-100 border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest hover:bg-gray-200 transition whitespace-nowrap">
@@ -92,9 +108,21 @@
 								</div>
 							</div>
 						</div>
+						<div class="mb-4 flex flex-col sm:flex-row sm:items-center gap-2">
+							<button id="bulk-lock-button" type="submit" form="bulk-lock-form" disabled class="inline-flex items-center px-4 py-2 bg-amber-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-amber-700 transition disabled:opacity-50 disabled:cursor-not-allowed" onclick="return confirm('{{ __('Lock all selected marks? This will prevent normal edits.') }}');">
+								{{ __('Lock Selected') }}
+							</button>
+							<button id="bulk-unlock-button" type="submit" form="bulk-unlock-form" disabled class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 transition disabled:opacity-50 disabled:cursor-not-allowed" onclick="return confirm('{{ __('Unlock all selected marks? This will allow edits again.') }}');">
+								{{ __('Unlock Selected') }}
+							</button>
+							<p class="text-xs text-gray-500">{{ __('Select rows, then lock or unlock them in bulk.') }}</p>
+						</div>
 							<table class="w-full text-sm text-left text-gray-600">
 								<thead class="text-xs uppercase bg-gray-100 text-gray-700">
 									<tr>
+										<th class="px-6 py-3">
+											<input id="select_all_marks" type="checkbox" class="rounded border-gray-300 text-amber-600 focus:ring-amber-500">
+										</th>
 										<th class="px-6 py-3">{{ __('#') }}</th>
 										<th class="px-6 py-3 whitespace-nowrap">{{ __('Student ID') }}</th>
 										<th class="px-6 py-3">{{ __('User Name') }}</th>
@@ -108,6 +136,10 @@
 								<tbody>
 									@foreach($marks as $index => $mark)
 										<tr class="bg-white border-b hover:bg-gray-50 transition">
+											<td class="px-6 py-2">
+												<input type="checkbox" name="mark_ids[]" value="{{ $mark->id }}" form="bulk-lock-form" class="mark-select-checkbox rounded border-gray-300 text-amber-600 focus:ring-amber-500">
+												<input type="hidden" name="mark_ids[]" value="{{ $mark->id }}" form="bulk-unlock-form" class="mark-select-hidden" disabled>
+											</td>
 											<td class="px-6 py-2 font-medium text-gray-900">{{ $index + 1 }}</td>
 											<td class="px-6 py-2 whitespace-nowrap">{{ $mark->enrollment?->student?->student_id ?? '-' }}</td>
 											<td class="px-6 py-2 whitespace-nowrap">{{ $mark->user?->name ?? '-' }}</td>
@@ -123,32 +155,19 @@
 											</td>
 											<td class="px-6 py-2 whitespace-nowrap">
 												@if($mark->is_locked)
-													<form action="{{ route('marks.request_edit', $mark->id) }}" method="POST" class="inline">
+													<form action="{{ route('marksheet.unlock', $mark->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Unlock this mark? This will allow edits again.') }}');">
 														@csrf
 														<button type="submit" class="inline-flex items-center px-3 py-1.5 bg-amber-100 text-amber-700 rounded-md hover:bg-amber-200 transition font-medium text-xs mb-1 md:mb-0">
-															{{ __('Request Edit') }}
+															{{ __('Unlock') }}
 														</button>
 													</form>
-													@can('delete marks')
-													<button type="button" disabled class="inline-flex items-center px-3 py-1.5 bg-gray-100 text-gray-400 rounded-md font-medium text-xs cursor-not-allowed">
-														{{ __('Delete') }}
-													</button>
-													@endcan
 												@else
-													@can('edit marks')
-													<a href="{{ route('marks.edit', $mark->id) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition font-medium text-xs mb-1 md:mb-0">
-														{{ __('Edit') }}
-													</a>
-													@endcan
-													@can('delete marks')
-													<form action="{{ route('marks.destroy', $mark->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Are you sure you want to delete this mark?') }}');">
+													<form action="{{ route('marksheet.lock', $mark->id) }}" method="POST" class="inline" onsubmit="return confirm('{{ __('Lock this mark? This will prevent normal edits.') }}');">
 														@csrf
-														@method('DELETE')
-														<button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition font-medium text-xs">
-															{{ __('Delete') }}
+														<button type="submit" class="inline-flex items-center px-3 py-1.5 bg-amber-100 text-amber-700 rounded-md hover:bg-amber-200 transition font-medium text-xs mb-1 md:mb-0">
+															{{ __('Lock') }}
 														</button>
 													</form>
-													@endcan
 												@endif
 											</td>
 										</tr>
@@ -171,9 +190,11 @@
 		window.updateFilters = function () {
 			const courseId = document.getElementById('course_filter')?.value || '';
 			const assessmentId = document.getElementById('assessment_filter')?.value || '';
+			const studentId = document.getElementById('student_id_filter')?.value.trim() || '';
 			const params = new URLSearchParams();
 			if (courseId) params.append('course_id', courseId);
 			if (assessmentId) params.append('assessment_id', assessmentId);
+			if (studentId) params.append('student_id', studentId);
 			const queryString = params.toString();
 			window.location.href = queryString ? '{{ route('marksheet.index') }}?' + queryString : '{{ route('marksheet.index') }}';
 		};
@@ -187,6 +208,70 @@
 					}, 10000);
 				}
 			});
+
+			const selectAllCheckbox = document.getElementById('select_all_marks');
+			const selectableRows = Array.from(document.querySelectorAll('.mark-select-checkbox'));
+			const unlockHiddenInputs = Array.from(document.querySelectorAll('.mark-select-hidden'));
+			const bulkLockButton = document.getElementById('bulk-lock-button');
+			const bulkUnlockButton = document.getElementById('bulk-unlock-button');
+
+			const syncBulkLockState = function () {
+				const checkedCount = selectableRows.filter(function (checkbox) {
+					return checkbox.checked;
+				}).length;
+
+				selectableRows.forEach(function (checkbox, index) {
+					if (unlockHiddenInputs[index]) {
+						unlockHiddenInputs[index].disabled = ! checkbox.checked;
+					}
+				});
+
+				if (bulkLockButton) {
+					bulkLockButton.disabled = checkedCount === 0;
+				}
+
+				if (bulkUnlockButton) {
+					bulkUnlockButton.disabled = checkedCount === 0;
+				}
+
+				if (selectAllCheckbox) {
+					if (checkedCount === 0) {
+						selectAllCheckbox.checked = false;
+						selectAllCheckbox.indeterminate = false;
+					} else if (checkedCount === selectableRows.length) {
+						selectAllCheckbox.checked = true;
+						selectAllCheckbox.indeterminate = false;
+					} else {
+						selectAllCheckbox.checked = false;
+						selectAllCheckbox.indeterminate = true;
+					}
+				}
+			};
+
+			if (selectAllCheckbox) {
+				selectAllCheckbox.addEventListener('change', function () {
+					selectableRows.forEach(function (checkbox) {
+						checkbox.checked = selectAllCheckbox.checked;
+					});
+					syncBulkLockState();
+				});
+			}
+
+			selectableRows.forEach(function (checkbox) {
+				checkbox.addEventListener('change', syncBulkLockState);
+			});
+
+			const studentIdFilter = document.getElementById('student_id_filter');
+			if (studentIdFilter) {
+				studentIdFilter.addEventListener('keydown', function (event) {
+					if (event.key === 'Enter') {
+						event.preventDefault();
+						window.updateFilters();
+					}
+				});
+			}
+
+			syncBulkLockState();
 		});
 	</script>
 </x-app-layout>

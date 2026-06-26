@@ -103,6 +103,10 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/marksheet', [MarkController::class, 'showMarkSheet'])->name('marksheet.index')->middleware('can:view marksheet');
     Route::get('/marksheet/export/csv', [MarkController::class, 'exportMarksheetCsv'])->name('marksheet.export.csv');
+    Route::post('/marksheet/lock-selected', [MarkController::class, 'bulkLock'])->name('marksheet.bulk_lock')->middleware('can:view marksheet');
+    Route::post('/marksheet/unlock-selected', [MarkController::class, 'bulkUnlock'])->name('marksheet.bulk_unlock')->middleware('can:view marksheet');
+    Route::post('/marksheet/{mark}/lock', [MarkController::class, 'lock'])->name('marksheet.lock')->middleware('can:view marksheet');
+    Route::post('/marksheet/{mark}/unlock', [MarkController::class, 'unlock'])->name('marksheet.unlock')->middleware('can:view marksheet');
 
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index')->middleware('can:view roles');
     Route::get('/roles/create', [RoleController::class, 'create'])->name('roles.create')->middleware('can:create roles');
