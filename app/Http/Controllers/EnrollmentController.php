@@ -17,6 +17,9 @@ class EnrollmentController extends Controller
     public function index()
     {
         $enrollments = Enrollment::with(['student', 'course', 'academicYear'])
+            ->whereHas('academicYear', function ($query) {
+                $query->where('is_current', true);
+            })
             ->orderBy('student_id')
             ->paginate(50);
 

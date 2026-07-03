@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AcademicYear;
 use App\Models\Assessment;
 use App\Models\Course;
 use App\Models\CourseUser;
@@ -19,8 +20,10 @@ class MarkController extends Controller
         $courseId = $request->query('course_id');
         $assessmentId = $request->query('assessment_id');
 
-        $marks = Mark::with(['assessment.course', 'enrollment.student'])
-            ->where('user_id', Auth::id())
+        $marksQuery = $this->currentAcademicYearMarksQuery();
+
+        $marks = (clone $marksQuery)
+            ->with(['assessment.course', 'enrollment.student'])
             ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
             ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
             ->orderBy(
@@ -29,7 +32,7 @@ class MarkController extends Controller
             )
             ->get();
 
-        $courses = Mark::where('user_id', Auth::id())
+        $courses = (clone $marksQuery)
             ->with('assessment.course')
             ->get()
             ->pluck('assessment.course')
@@ -38,7 +41,7 @@ class MarkController extends Controller
             ->values();
 
         $assessments = $courseId
-            ? Mark::where('user_id', Auth::id())
+            ? (clone $marksQuery)
                 ->with('assessment')
                 ->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId))
                 ->get()
@@ -53,14 +56,21 @@ class MarkController extends Controller
 
     public function create()
     {
+        $currentAcademicYearId = $this->currentAcademicYearId();
         $assignedCourseIds = CourseUser::where('user_id', Auth::id())
             ->pluck('course_id');
 
         $courses = Course::whereIn('id', $assignedCourseIds)
+            ->when(
+                $currentAcademicYearId,
+                fn ($query) => $query->whereHas('enrollments', fn ($enrollmentQuery) => $enrollmentQuery->where('academic_year_id', $currentAcademicYearId)),
+                fn ($query) => $query->whereRaw('0 = 1')
+            )
             ->orderBy('course_code')
             ->get();
 
         $assessments = Assessment::with('course')
+            ->whereIn('course_id', $courses->pluck('id'))
             ->orderBy('title')
             ->get();
 
@@ -91,11 +101,11 @@ class MarkController extends Controller
                 ->withInput();
         }
 
-        $enrollment = $this->resolveEnrollment($validated['student_id'], (int) $validated['course_id']);
+        $enrollment = $this->resolveCurrentAcademicYearEnrollment($validated['student_id'], (int) $validated['course_id']);
 
         if (! $enrollment) {
             return back()
-                ->withErrors(['student_id' => 'No enrollment was found for that student in the selected course.'])
+                ->withErrors(['student_id' => 'No current academic year enrollment was found for that student in the selected course.'])
                 ->withInput();
         }
 
@@ -580,11 +590,11 @@ class MarkController extends Controller
                 continue;
             }
 
-            $enrollment = $this->resolveEnrollment($studentId, $courseId);
+            $enrollment = $this->resolveCurrentAcademicYearEnrollment($studentId, $courseId);
 
             if (! $enrollment) {
                 $skipped++;
-                $rowErrors[] = "Line {$lineNumber}: no enrollment found for student in course.";
+                $rowErrors[] = "Line {$lineNumber}: no current academic year enrollment found for student in course.";
 
                 continue;
             }
@@ -626,8 +636,8 @@ class MarkController extends Controller
         $courseId = $request->query('course_id');
         $assessmentId = $request->query('assessment_id');
 
-        $marks = Mark::with(['assessment.course', 'enrollment.student'])
-            ->where('user_id', Auth::id())
+        $marks = $this->currentAcademicYearMarksQuery()
+            ->with(['assessment.course', 'enrollment.student'])
             ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
             ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
             ->orderBy(
@@ -652,6 +662,39 @@ class MarkController extends Controller
         }, $filename, [
             'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
+    }
+
+    private function currentAcademicYearId(): ?int
+    {
+        return AcademicYear::where('is_current', true)->value('id');
+    }
+
+    private function currentAcademicYearMarksQuery()
+    {
+        $currentAcademicYearId = $this->currentAcademicYearId();
+
+        return Mark::query()
+            ->where('user_id', Auth::id())
+            ->when(
+                $currentAcademicYearId,
+                fn ($query) => $query->whereHas('enrollment', fn ($enrollmentQuery) => $enrollmentQuery->where('academic_year_id', $currentAcademicYearId)),
+                fn ($query) => $query->whereRaw('0 = 1')
+            );
+    }
+
+    private function resolveCurrentAcademicYearEnrollment(string $studentId, int $courseId): ?Enrollment
+    {
+        $currentAcademicYearId = $this->currentAcademicYearId();
+
+        if (! $currentAcademicYearId) {
+            return null;
+        }
+
+        return Enrollment::where('student_id', $studentId)
+            ->where('course_id', $courseId)
+            ->where('academic_year_id', $currentAcademicYearId)
+            ->orderByDesc('id')
+            ->first();
     }
 
     public function exportMarksheetCsv(Request $request)
@@ -696,8 +739,18 @@ class MarkController extends Controller
         $assessmentId = $request->query('assessment_id');
         $studentId = trim((string) $request->query('student_id', ''));
 
-        $marks = Mark::with(['assessment.course', 'enrollment.student','enrollment.course', 'user'])
+        $currentAcademicYearId = $this->currentAcademicYearId();
+
+        $marksheetBaseQuery = Mark::query()
             ->whereHas('enrollment.course', fn ($query) => $query->where('user_id', Auth::id()))
+            ->when(
+                $currentAcademicYearId,
+                fn ($query) => $query->whereHas('enrollment', fn ($enrollmentQuery) => $enrollmentQuery->where('academic_year_id', $currentAcademicYearId)),
+                fn ($query) => $query->whereRaw('0 = 1')
+            );
+
+        $marks = (clone $marksheetBaseQuery)
+            ->with(['assessment.course', 'enrollment.student', 'enrollment.course', 'user'])
             ->when($courseId, fn ($query) => $query->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId)))
             ->when($assessmentId, fn ($query) => $query->where('assessment_id', $assessmentId))
             ->when($studentId !== '', fn ($query) => $query->whereHas('enrollment.student', fn ($q) => $q->where('student_id', 'like', '%'.$studentId.'%')))
@@ -707,7 +760,8 @@ class MarkController extends Controller
             )
             ->get();
 
-        $courses = Mark::with('assessment.course')
+        $courses = (clone $marksheetBaseQuery)
+            ->with('assessment.course')
             ->get()
             ->pluck('assessment.course')
             ->unique('id')
@@ -715,7 +769,8 @@ class MarkController extends Controller
             ->values();
     
         $assessments = $courseId
-            ? Mark::with('assessment')
+            ? (clone $marksheetBaseQuery)
+                ->with('assessment')
                 ->whereHas('assessment', fn ($q) => $q->where('course_id', $courseId))
                 ->get()
                 ->pluck('assessment')
