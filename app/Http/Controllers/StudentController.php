@@ -11,9 +11,20 @@ class StudentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $students = Student::with('department')->orderBy('student_id')->paginate(50);
+        $search = trim((string) $request->query('search', ''));
+
+        $students = Student::with('department')
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($searchQuery) use ($search) {
+                    $searchQuery->where('student_id', 'like', "%{$search}%")
+                        ->orWhere('full_name', 'like', "%{$search}%");
+                });
+            })
+            ->orderBy('student_id')
+            ->paginate(50)
+            ->withQueryString();
 
         return view('student.index', compact('students'));
     }
@@ -269,6 +280,6 @@ class StudentController extends Controller
             $message .= ' Issues: '.implode(' ', array_slice($rowErrors, 0, 5));
         }
 
-        return redirect()->route('students.index')->with('success', $message);
+        return redirect()->route('students.index')->with('status', $message);
     }
 }

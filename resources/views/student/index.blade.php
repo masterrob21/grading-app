@@ -26,6 +26,12 @@
                 </div>
             @endif
 
+            @if(session('status'))
+                <div class="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg">
+                    <p class="text-sm font-medium text-green-800">{{ session('status') }}</p>
+                </div>
+            @endif
+
             @if($errors->any())
                 <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
                     <ul class="text-sm text-red-800 list-disc pl-5 space-y-1">
@@ -71,6 +77,17 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     @if($students->count())
+                        <form method="GET" action="{{ route('students.index') }}" class="mb-4" id="student-search-form">
+                            <input
+                                type="text"
+                                id="student-search"
+                                name="search"
+                                value="{{ request('search') }}"
+                                onkeyup="submitStudentSearch(this)"
+                                placeholder="{{ __('Search by name or student ID') }}"
+                                class="w-full md:w-96 px-4 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                            >
+                        </form>
                         <div class="overflow-x-auto">
                             <table class="w-full text-sm text-left text-gray-600">
                                 <thead class="text-xs uppercase bg-gray-100 text-gray-700">
@@ -144,6 +161,28 @@
             $('#success-message').delay(5000).fadeOut('slow', function() {
                 $(this).remove();
             });
+
+            const searchInput = document.getElementById('student-search');
+
+            if (searchInput && searchInput.value.trim() !== '') {
+                searchInput.focus();
+                const textLength = searchInput.value.length;
+                searchInput.setSelectionRange(textLength, textLength);
+            }
         });
+
+        let searchSubmitTimer = null;
+
+        window.submitStudentSearch = function(input) {
+            clearTimeout(searchSubmitTimer);
+
+            searchSubmitTimer = setTimeout(function() {
+                const form = input.form;
+
+                if (form) {
+                    form.submit();
+                }
+            }, 250);
+        };
     </script>
 </x-app-layout>
